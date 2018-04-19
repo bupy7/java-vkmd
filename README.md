@@ -1,44 +1,38 @@
-java-music-ytp
+java-ytp-music
 ==============
 
-?
+A lighten desktop application to listen music from YouTube without video stream.
 
 Requirements
 ------------
 
 - Java >= 8.0
 
-Requirements for developing
----------------------------
-
-- Gradle >= 4.3
-
 Run
 ---
 
-### For developing
-
-
 ```bash
-$ ./gradlew run
+$ ./ytp-music
 ```
 
-### For using
 
-```bash
-$ java -jar musicytp.jar
-```
+Developing
+----------
 
-Build
------
+### Build
 
 ```bash
 $ ./gradlew build
 ```
 
+### Run
 
-Run tests
----------
+```bash
+$ ./gradlew run
+```
+
+
+### Testing
 
 ```bash
 $ ./gradlew test
@@ -47,4 +41,4 @@ $ ./gradlew test
 License
 -------
 
-java-music-ytp is released under the BSD-3-Clause License. See the bundled LICENSE.md for details.
+java-ytp-music is released under the BSD-3-Clause License. See the bundled LICENSE.md for details.
