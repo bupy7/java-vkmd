@@ -6,11 +6,15 @@
  * user guide available at https://docs.gradle.org/4.3.1/userguide/tutorial_java_projects.html
  */
 
-// Apply the java plugin to add support for Java
-apply plugin: 'java'
+plugins {
+    id "net.ltgt.apt" version "0.10"
+}
 
-// Apply the application plugin to add support for building an application
+// apply plugins
+apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'application'
+apply plugin: 'idea'
 
 // package config params
 version = '1.0.0'
@@ -24,17 +28,20 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+    // compile fileTree(dir: 'libs', include: '*.jar')
 
-    compile 'com.google.guava:guava:23.0'
-    compile 'com.intellij:annotations:+@jar'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.google.guava:guava:24.1-jre'
+    implementation 'com.intellij:annotations:+@jar'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.google.dagger:dagger:2.15'
 
-    testCompile 'junit:junit:4.12'
+    apt 'com.google.dagger:dagger-compiler:2.15'
+
+    testImplementation 'junit:junit:4.12'
 }
 
 // Define the main class for the application
-mainClassName = 'com.iamrusty.ytpmusic.Bootstrap'
+mainClassName = 'ru.mihaly4.ytpmusic.Bootstrap'
 
 // Configuration for jar file
 jar {

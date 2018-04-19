@@ -1,4 +1,4 @@
-package com.iamrusty.ytpmusic;
+package ru.mihaly4.ytpmusic;
 
 import org.junit.Test;
 
