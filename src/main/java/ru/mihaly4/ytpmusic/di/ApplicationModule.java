@@ -1,5 +1,6 @@
 package ru.mihaly4.ytpmusic.di;
 
+import ru.mihaly4.ytpmusic.menu.MainMenu;
 import ru.mihaly4.ytpmusic.view.MainView;
 import dagger.Module;
 import dagger.Provides;
@@ -17,5 +18,11 @@ public class ApplicationModule {
     @SharedScope
     public MainView provideMainView() {
         return new MainView(primaryStage);
+    }
+
+    @Provides
+    @SharedScope
+    public MainMenu provideMainMenu() {
+        return new MainMenu();
     }
 }

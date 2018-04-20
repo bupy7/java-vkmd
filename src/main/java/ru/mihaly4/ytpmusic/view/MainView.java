@@ -3,12 +3,10 @@ package ru.mihaly4.ytpmusic.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
 import ru.mihaly4.ytpmusic.presenter.MainPresenter;
 
 public class MainView extends AbstractView implements IMainView {
@@ -26,7 +24,7 @@ public class MainView extends AbstractView implements IMainView {
     }
 
     @Override
-    public void render() {
+    public void run() {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
 

@@ -1,5 +1,6 @@
 package ru.mihaly4.ytpmusic.di;
 
+import ru.mihaly4.ytpmusic.menu.MainMenu;
 import ru.mihaly4.ytpmusic.view.MainView;
 import dagger.Component;
 
@@ -7,4 +8,5 @@ import dagger.Component;
 @SharedScope
 public interface ApplicationComponent {
     MainView makeMainView();
+    MainMenu makeMainMenu();
 }
