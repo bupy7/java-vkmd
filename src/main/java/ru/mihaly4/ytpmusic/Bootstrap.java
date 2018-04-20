@@ -11,7 +11,7 @@ public class Bootstrap extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // initial configuration
-        primaryStage.setTitle("YouTube Music Player");
+        primaryStage.setTitle("YTP Music");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_YOUTUBE)));
 
         ApplicationComponent di = DaggerApplicationComponent.builder()
