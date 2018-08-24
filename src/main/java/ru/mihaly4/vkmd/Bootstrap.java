@@ -1,8 +1,8 @@
-package ru.mihaly4.ytpmusic;
+package ru.mihaly4.vkmd;
 
-import ru.mihaly4.ytpmusic.di.ApplicationComponent;
-import ru.mihaly4.ytpmusic.di.ApplicationModule;
-import ru.mihaly4.ytpmusic.di.DaggerApplicationComponent;
+import ru.mihaly4.vkmd.di.ApplicationComponent;
+import ru.mihaly4.vkmd.di.ApplicationModule;
+import ru.mihaly4.vkmd.di.DaggerApplicationComponent;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -11,8 +11,8 @@ public class Bootstrap extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // initial configuration
-        primaryStage.setTitle("YTP Music");
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_YOUTUBE)));
+        primaryStage.setTitle("VK Music Downloader");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
 
         ApplicationComponent di = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(primaryStage))

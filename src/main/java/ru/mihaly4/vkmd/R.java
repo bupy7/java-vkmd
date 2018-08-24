@@ -1,7 +1,7 @@
-package ru.mihaly4.ytpmusic;
+package ru.mihaly4.vkmd;
 
 public final class R {
-    public static final String ICON_YOUTUBE = "/icons/youtube-32px.png";
+    public static final String ICON_APP = "/icons/vk-32px.png";
 
     private R() {
         throw new AssertionError("Creating new instance is disabled.");

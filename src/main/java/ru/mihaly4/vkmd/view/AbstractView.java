@@ -1,4 +1,4 @@
-package ru.mihaly4.ytpmusic.view;
+package ru.mihaly4.vkmd.view;
 
 import javafx.stage.Stage;
 

@@ -1,4 +1,4 @@
-package ru.mihaly4.ytpmusic.presenter;
+package ru.mihaly4.vkmd.presenter;
 
 public abstract class AbstractPresenter<V> {
     protected V view;

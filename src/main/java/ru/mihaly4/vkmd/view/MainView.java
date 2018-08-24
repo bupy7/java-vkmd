@@ -1,4 +1,4 @@
-package ru.mihaly4.ytpmusic.view;
+package ru.mihaly4.vkmd.view;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.mihaly4.ytpmusic.presenter.MainPresenter;
+import ru.mihaly4.vkmd.presenter.MainPresenter;
 
 public class MainView extends AbstractView implements IMainView {
     private TextField urlTxt = new TextField();

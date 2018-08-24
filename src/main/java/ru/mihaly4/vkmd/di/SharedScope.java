@@ -1,4 +1,4 @@
-package ru.mihaly4.ytpmusic.di;
+package ru.mihaly4.vkmd.di;
 
 import javax.inject.Scope;
 import java.lang.annotation.Retention;

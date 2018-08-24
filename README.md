@@ -1,7 +1,7 @@
-java-ytp-music
+java-vkmd
 ==============
 
-A lighten desktop application to listen music from YouTube without video stream.
+A lighten music downloader for Vkontakte.
 
 Requirements
 ------------
@@ -12,12 +12,13 @@ Run
 ---
 
 ```bash
-$ ./ytp-music
+$ ./vkmd
 ```
-
 
 Developing
 ----------
+
+- Gradle >= 4.3.1
 
 ### Build
 
@@ -41,4 +42,4 @@ $ ./gradlew test
 License
 -------
 
-java-ytp-music is released under the BSD-3-Clause License. See the bundled LICENSE.md for details.
+java-vkmd is released under the BSD-3-Clause License. See the bundled LICENSE.md for details.

@@ -1,8 +1,8 @@
-package ru.mihaly4.ytpmusic;
+package ru.mihaly4.vkmd;
 
 import org.junit.Test;
 
-public class ApplicationTest {
+public class BootstrapTest {
     @Test
     public void main() {
     }
