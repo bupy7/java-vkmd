@@ -2,21 +2,22 @@ package ru.mihaly4.vkmd.view;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.mihaly4.vkmd.R;
 import ru.mihaly4.vkmd.presenter.MainPresenter;
 
 public class MainView extends AbstractView implements IMainView {
-    private TextField urlTxt = new TextField();
-    private Button playStopBtn = new Button();
-    private Button nextBtn = new Button();
-    private Label titleLbl = new Label();
-
     private MainPresenter presenter = new MainPresenter();
 
     public MainView(Stage stage) {
@@ -26,31 +27,77 @@ public class MainView extends AbstractView implements IMainView {
     }
 
     @Override
-    public void run() {
+    public void render() {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
 
-        urlTxt.setPromptText("Enter video url to start...");
-        urlTxt.setFocusTraversable(false);
-        vbox.getChildren().add(urlTxt);
+        vbox.getChildren().addAll(inputRender(), controlRender(), listRender(vbox));
 
-        HBox hbox = new HBox(5);
+        configureStage(vbox);
 
-        playStopBtn.setText("Play");
-        hbox.getChildren().add(playStopBtn);
-
-        nextBtn.setText("Next");
-        hbox.getChildren().add(nextBtn);
-
-        titleLbl.setText("");
-        titleLbl.setAlignment(Pos.CENTER_LEFT);
-        titleLbl.setPrefSize(190, 26);
-        hbox.getChildren().add(titleLbl);
-
-        vbox.getChildren().add(hbox);
-
-        stage.setScene(new Scene(vbox, 300, 70));
-        stage.setResizable(false);
         stage.show();
+
+        vbox.requestFocus();
+    }
+
+    private Node inputRender() {
+        TextField urlTxt = new TextField();
+        urlTxt.setPromptText("Enter URL");
+
+        return urlTxt;
+    }
+
+    private Node controlRender() {
+        HBox hbox = new HBox(5);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+
+        Button parseBtn = new Button();
+        parseBtn.setText("Parse");
+        hbox.getChildren().add(parseBtn);
+
+        Button downloadBtn = new Button();
+        downloadBtn.setText("Download");
+        hbox.getChildren().add(downloadBtn);
+
+        Label statusLbl = new Label();
+        hbox.getChildren().add(statusLbl);
+
+        return hbox;
+    }
+
+    private Node listRender(Region parent) {
+        HBox hbox = new HBox(5);
+        hbox.prefHeightProperty().bind(parent.heightProperty());
+
+        ListView inList = new ListView();
+        inList.prefWidthProperty().bind(hbox.widthProperty());
+        hbox.getChildren().add(inList);
+
+        VBox vbox = new VBox(5);
+        vbox.setMinWidth(35);
+
+        Button allToOutBtn = new Button();
+        allToOutBtn.setText(">>");
+        vbox.getChildren().add(allToOutBtn);
+
+        Button clearOutBtn = new Button();
+        clearOutBtn.setText("<<");
+        vbox.getChildren().add(clearOutBtn);
+
+        hbox.getChildren().add(vbox);
+
+        ListView outList = new ListView();
+        outList.prefWidthProperty().bind(hbox.widthProperty());
+        hbox.getChildren().add(outList);
+
+        return hbox;
+    }
+
+    private void configureStage(Parent root) {
+        Scene scene = new Scene(root, 485, 400);
+
+        stage.setScene(scene);
+        stage.setTitle(R.TITLE_APP);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
     }
 }

@@ -9,5 +9,5 @@ public abstract class AbstractView {
         this.stage = stage;
     }
 
-    public abstract void run();
+    public abstract void render();
 }
