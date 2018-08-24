@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Collections;
 
 /**
- * Fork from https://github.com/yuru-yuri/vk-audio-url-decoder-php/commit/7b4178cf6b314c09f9acb8b19619edb1439e9af8
+ * Rewrite to Java from https://github.com/yuru-yuri/vk-audio-url-decoder-php/commit/7b4178cf6b314c09f9acb8b19619edb1439e9af8
  */
 public class VkMusicLinkDecoder {
     private static final String DICT = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=";
