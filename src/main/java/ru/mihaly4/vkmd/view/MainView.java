@@ -27,17 +27,26 @@ public class MainView extends AbstractView implements IMainView {
     }
 
     @Override
-    public void render() {
+    protected Parent onCreate() {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
 
         vbox.getChildren().addAll(inputRender(), controlRender(), listRender(vbox));
 
-        configureStage(vbox);
+        return vbox;
+    }
+
+    @Override
+    protected void onStart(Parent root) {
+        Scene scene = new Scene(root, 485, 400);
+
+        stage.setScene(scene);
+        stage.setTitle(R.TITLE_APP);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
 
         stage.show();
 
-        vbox.requestFocus();
+        root.requestFocus();
     }
 
     private Node inputRender() {
@@ -91,13 +100,5 @@ public class MainView extends AbstractView implements IMainView {
         hbox.getChildren().add(outList);
 
         return hbox;
-    }
-
-    private void configureStage(Parent root) {
-        Scene scene = new Scene(root, 485, 400);
-
-        stage.setScene(scene);
-        stage.setTitle(R.TITLE_APP);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
     }
 }
