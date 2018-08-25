@@ -3,9 +3,11 @@ package ru.mihaly4.vkmd.client;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import ru.mihaly4.vkmd.model.Credential;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class VkClient implements IVkClient {
     private static final String BASE_AUDIO_URL = "https://m.vk.com/audios";
@@ -59,6 +61,14 @@ public class VkClient implements IVkClient {
         }
 
         return html;
+    }
+
+    @Override
+    public CompletableFuture<Credential> login(String username, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            // @TODO
+            return new Credential();
+        });
     }
 
     private synchronized OkHttpClient getHttpClient() {

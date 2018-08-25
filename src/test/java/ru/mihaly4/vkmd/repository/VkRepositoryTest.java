@@ -6,11 +6,13 @@ import org.junit.Test;
 import ru.mihaly4.vkmd.client.IVkClient;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.ILogger;
+import ru.mihaly4.vkmd.model.Credential;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.*;
@@ -83,6 +85,11 @@ public class VkRepositoryTest {
             } catch (IOException e) {
                 return "";
             }
+        }
+
+        @Override
+        public CompletableFuture<Credential> login(String username, String password) {
+            return CompletableFuture.supplyAsync(Credential::new);
         }
     }
 
