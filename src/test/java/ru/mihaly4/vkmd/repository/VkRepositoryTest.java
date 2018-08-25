@@ -19,7 +19,7 @@ public class VkRepositoryTest {
     @Test
     public void getFromProfile() throws InterruptedException {
         VkClient client = new VkClient();
-        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger());
+        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger(), 444529088);
         final Map<String, String[]> links = new HashMap<>();
 
         final CountDownLatch signal = new CountDownLatch(1);
@@ -38,7 +38,7 @@ public class VkRepositoryTest {
     @Test
     public void getFromCommunity() throws InterruptedException {
         VkClient client = new VkClient();
-        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger());
+        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger(), 444529088);
         final Map<String, String[]> links = new HashMap<>();
 
         final CountDownLatch signal = new CountDownLatch(1);
@@ -83,16 +83,6 @@ public class VkRepositoryTest {
             } catch (IOException e) {
                 return "";
             }
-        }
-
-        @Override
-        public String getRemixSid() {
-            return "";
-        }
-
-        @Override
-        public int getUid() {
-            return 444529088; // need for to decode
         }
     }
 

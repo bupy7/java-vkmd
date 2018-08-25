@@ -43,15 +43,16 @@ public class ApplicationModule {
     public VkRepository prodideVkRepository(
             VkClient vkClient,
             VkMusicLinkDecoder vkMusicLinkDecoder,
-            MemoryLogger logger
+            MemoryLogger logger,
+            PackageConfig config
     ) {
-        return new VkRepository(vkClient, vkMusicLinkDecoder, logger);
+        return new VkRepository(vkClient, vkMusicLinkDecoder, logger, config.getVkUid());
     }
 
     @Provides
     @SharedScope
     public VkClient provideVkClient(PackageConfig config) {
-        return new VkClient(config.getVkRemixSid(), config.getVkUid());
+        return new VkClient(config.getVkRemixSid());
     }
 
     @Provides

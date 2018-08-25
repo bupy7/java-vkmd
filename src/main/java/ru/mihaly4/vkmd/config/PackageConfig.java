@@ -2,7 +2,7 @@ package ru.mihaly4.vkmd.config;
 
 public class PackageConfig {
     private String vkRemixSid = "";
-    private int vkUid = 0;
+    private Integer vkUid = 0;
 
     public String getVkRemixSid() {
         return vkRemixSid;
@@ -12,11 +12,11 @@ public class PackageConfig {
         this.vkRemixSid = vkRemixSid;
     }
 
-    public int getVkUid() {
+    public Integer getVkUid() {
         return vkUid;
     }
 
-    public void setVkUid(int vkUid) {
+    public void setVkUid(Integer vkUid) {
         this.vkUid = vkUid;
     }
 }

@@ -22,12 +22,14 @@ public class VkRepository {
     private IVkClient client;
     private VkMusicLinkDecoder linkDecoder;
     private ILogger logger;
+    private Integer uid;
 
     @Inject
-    public VkRepository(IVkClient client, VkMusicLinkDecoder linkDecoder, ILogger logger) {
+    public VkRepository(IVkClient client, VkMusicLinkDecoder linkDecoder, ILogger logger, Integer uid) {
         this.client = client;
         this.linkDecoder = linkDecoder;
         this.logger = logger;
+        this.uid = uid;
     }
 
     public CompletableFuture<Map<String, String[]>> findAllByWall(String id) {
@@ -58,7 +60,7 @@ public class VkRepository {
                     String title = track.selectFirst(".ai_title").text();
 
                     String encodedLink = track.selectFirst("input").val();
-                    String link = linkDecoder.decode(encodedLink, client.getUid());
+                    String link = linkDecoder.decode(encodedLink, uid);
 
                     links.put(link, new String[]{author, title});
                 }

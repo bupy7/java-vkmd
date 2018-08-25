@@ -12,13 +12,11 @@ public class VkClient implements IVkClient {
     private static final String BASE_WALL_URL = "https://m.vk.com/";
 
     private String remixSid = "";
-    private int uid = 0;
     private OkHttpClient httpClient;
 
     @Inject
-    public VkClient(String remixSid, int uid) {
+    public VkClient(String remixSid) {
         this.remixSid = remixSid;
-        this.uid = uid;
     }
 
     @Override
@@ -61,16 +59,6 @@ public class VkClient implements IVkClient {
         }
 
         return html;
-    }
-
-    @Override
-    public String getRemixSid() {
-        return remixSid;
-    }
-
-    @Override
-    public int getUid() {
-        return uid;
     }
 
     private synchronized OkHttpClient getHttpClient() {
