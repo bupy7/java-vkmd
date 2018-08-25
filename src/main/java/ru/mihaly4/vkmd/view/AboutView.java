@@ -30,8 +30,6 @@ public class AboutView extends AbstractView implements IAboutView {
         vbox.setAlignment(Pos.CENTER);
 
         ImageView logoImgView = new ImageView(new Image(getClass().getResourceAsStream(R.APP_LOGO)));
-        logoImgView.setPreserveRatio(true);
-        logoImgView.setFitWidth(64);
         vbox.getChildren().add(logoImgView);
 
         Text appNameTxt = new Text(R.APP_TITLE);
