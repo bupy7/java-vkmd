@@ -25,6 +25,10 @@ public abstract class AbstractView {
         resume();
     }
 
+    /**
+     * Create own elements right here.
+     * @return Parent
+     */
     protected abstract Parent onCreate();
 
     protected void create() {
@@ -49,10 +53,16 @@ public abstract class AbstractView {
         onResume(root);
     }
 
+    /**
+     * Initiate scene.
+     */
     protected void onStart(Parent root) {
         // nothing
     }
 
+    /**
+     * Here you can set focus on any element or something else.
+     */
     protected void onResume(Parent root) {
         // nothing
     }

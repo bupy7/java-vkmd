@@ -6,13 +6,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ru.mihaly4.vkmd.R;
 import ru.mihaly4.vkmd.presenter.MainPresenter;
@@ -25,8 +25,8 @@ public class MainView extends AbstractView implements IMainView {
 
         presenter.bindView(this);
 
-        stage.setTitle(R.TITLE_APP);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
+        stage.setTitle(R.APP_TITLE);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.APP_ICON)));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class MainView extends AbstractView implements IMainView {
         downloadBtn.setText("Download");
         hbox.getChildren().add(downloadBtn);
 
-        Label statusLbl = new Label();
-        hbox.getChildren().add(statusLbl);
+        Text statusTxt = new Text();
+        hbox.getChildren().add(statusTxt);
 
         return hbox;
     }

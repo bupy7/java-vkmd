@@ -20,7 +20,7 @@ public class MainMenu implements IMenu {
         MenuBar bar = new MenuBar();
         MenuToolkit tk = MenuToolkit.toolkit();
 
-        Menu defaultApplicationMenu = tk.createDefaultApplicationMenu(R.TITLE_APP);
+        Menu defaultApplicationMenu = tk.createDefaultApplicationMenu(R.APP_TITLE);
         defaultApplicationMenu.getItems().get(ABOUT_INDEX).setOnAction(value -> {
             aboutView.show();
         });
