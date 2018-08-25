@@ -15,8 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class VkRepository {
-    private static final int PROFILE_LIMIT = 50;
-    private static final int COMMUNITY_LIMIT = 5;
+    private static final int AUDIO_LIMIT = 50;
+    private static final int WALL_LIMIT = 5;
     private static final long DDOS_DELAY = 1000;
 
     private IVkClient client;
@@ -30,12 +30,12 @@ public class VkRepository {
         this.logger = logger;
     }
 
-    public CompletableFuture<Map<String, String[]>> findAllByCommunity(String id) {
-        return findAll(page -> client.fromCommunity(id, COMMUNITY_LIMIT * page));
+    public CompletableFuture<Map<String, String[]>> findAllByWall(String id) {
+        return findAll(page -> client.fromWall(id, WALL_LIMIT * page));
     }
 
-    public CompletableFuture<Map<String, String[]>> findAllByProfile(int id) {
-        return findAll(page -> client.fromProfile(id, PROFILE_LIMIT * page));
+    public CompletableFuture<Map<String, String[]>> findAllByAudio(int id) {
+        return findAll(page -> client.fromAudio(id, AUDIO_LIMIT * page));
     }
 
     private CompletableFuture<Map<String, String[]>> findAll(IFetcher fetcher) {

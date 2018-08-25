@@ -24,7 +24,7 @@ public class VkRepositoryTest {
 
         final CountDownLatch signal = new CountDownLatch(1);
 
-        repository.findAllByProfile(123456789).thenAccept(action -> {
+        repository.findAllByAudio(123456789).thenAccept(action -> {
             links.putAll(action);
 
             signal.countDown();
@@ -43,7 +43,7 @@ public class VkRepositoryTest {
 
         final CountDownLatch signal = new CountDownLatch(1);
 
-        repository.findAllByCommunity("example").thenAccept(action -> {
+        repository.findAllByWall("example").thenAccept(action -> {
             links.putAll(action);
 
             signal.countDown();
@@ -56,7 +56,7 @@ public class VkRepositoryTest {
 
     private static class VkClient implements IVkClient {
         @Override
-        public String fromProfile(int id, int offset) {
+        public String fromAudio(int id, int offset) {
             if (offset != 0) {
                 return "";
             }
@@ -71,7 +71,7 @@ public class VkRepositoryTest {
         }
 
         @Override
-        public String fromCommunity(String id, int offset) {
+        public String fromWall(String id, int offset) {
             if (offset != 0) {
                 return "";
             }

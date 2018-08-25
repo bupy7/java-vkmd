@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 public class VkClient implements IVkClient {
-    private static final String BASE_PROFILE_URL = "https://m.vk.com/audios";
-    private static final String BASE_COMMUNITY_URL = "https://m.vk.com/";
+    private static final String BASE_AUDIO_URL = "https://m.vk.com/audios";
+    private static final String BASE_WALL_URL = "https://m.vk.com/";
 
     private String remixSid = "";
     private int uid = 0;
@@ -22,9 +22,9 @@ public class VkClient implements IVkClient {
     }
 
     @Override
-    public String fromProfile(int id, int offset) {
+    public String fromAudio(int id, int offset) {
         Request request = new Request.Builder()
-                .url(BASE_PROFILE_URL + id + "?offset=" + offset)
+                .url(BASE_AUDIO_URL + id + "?offset=" + offset)
                 .addHeader("Cookie", "remixsid=" + remixSid)
                 .get()
                 .build();
@@ -43,9 +43,9 @@ public class VkClient implements IVkClient {
     }
 
     @Override
-    public String fromCommunity(String id, int offset) {
+    public String fromWall(String id, int offset) {
         Request request = new Request.Builder()
-                .url(BASE_COMMUNITY_URL + id + "?offset=" + offset)
+                .url(BASE_WALL_URL + id + "?offset=" + offset)
                 .addHeader("Cookie", "remixsid=" + remixSid + ";remixmdevice=375/667/1/!!-!!!!")
                 .get()
                 .build();
