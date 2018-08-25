@@ -14,12 +14,10 @@ public class Bootstrap extends Application {
                 .applicationModule(new ApplicationModule(primaryStage))
                 .build();
 
-        // run view
-        AbstractView mainView = di.makeMainView();
-        mainView.create();
-        mainView.start();
+        // show main view
+        di.makeMainView().show();
 
-        // configuration menu
+        // render menu
         di.makeMainMenu().render();
     }
 

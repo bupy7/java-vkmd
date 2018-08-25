@@ -6,6 +6,7 @@ import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.MemoryLogger;
 import ru.mihaly4.vkmd.menu.MainMenu;
 import ru.mihaly4.vkmd.repository.VkRepository;
+import ru.mihaly4.vkmd.view.AboutView;
 import ru.mihaly4.vkmd.view.MainView;
 import dagger.Module;
 import dagger.Provides;
@@ -27,8 +28,8 @@ public class ApplicationModule {
 
     @Provides
     @SharedScope
-    public MainMenu provideMainMenu() {
-        return new MainMenu();
+    public MainMenu provideMainMenu(AboutView aboutView) {
+        return new MainMenu(aboutView);
     }
 
     @Provides
@@ -63,5 +64,13 @@ public class ApplicationModule {
     @SharedScope
     public MemoryLogger provideMemoryLogger() {
         return new MemoryLogger();
+    }
+
+    @Provides
+    @SharedScope
+    public AboutView provideAboutView() {
+        Stage stage = new Stage();
+        stage.initOwner(primaryStage);
+        return new AboutView(stage);
     }
 }

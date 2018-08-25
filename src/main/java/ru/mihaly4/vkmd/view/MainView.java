@@ -24,6 +24,9 @@ public class MainView extends AbstractView implements IMainView {
         super(stage);
 
         presenter.bindView(this);
+
+        stage.setTitle(R.TITLE_APP);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
     }
 
     @Override
@@ -41,11 +44,10 @@ public class MainView extends AbstractView implements IMainView {
         Scene scene = new Scene(root, 485, 400);
 
         stage.setScene(scene);
-        stage.setTitle(R.TITLE_APP);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream(R.ICON_APP)));
+    }
 
-        stage.show();
-
+    @Override
+    protected void onResume(Parent root) {
         root.requestFocus();
     }
 
