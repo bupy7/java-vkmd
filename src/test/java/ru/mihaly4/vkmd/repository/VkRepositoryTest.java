@@ -6,13 +6,11 @@ import org.junit.Test;
 import ru.mihaly4.vkmd.client.IVkClient;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.ILogger;
-import ru.mihaly4.vkmd.model.Credential;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.*;
@@ -21,7 +19,7 @@ public class VkRepositoryTest {
     @Test
     public void getFromProfile() throws InterruptedException {
         VkClient client = new VkClient();
-        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger(), 444529088);
+        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger());
         final Map<String, String[]> links = new HashMap<>();
 
         final CountDownLatch signal = new CountDownLatch(1);
@@ -40,7 +38,7 @@ public class VkRepositoryTest {
     @Test
     public void getFromCommunity() throws InterruptedException {
         VkClient client = new VkClient();
-        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger(), 444529088);
+        VkRepository repository = new VkRepository(client, new VkMusicLinkDecoder(), new DummyLogger());
         final Map<String, String[]> links = new HashMap<>();
 
         final CountDownLatch signal = new CountDownLatch(1);
@@ -63,7 +61,7 @@ public class VkRepositoryTest {
                 return "";
             }
 
-            URL fixture = getClass().getResource("/fixture/profile.html");
+            URL fixture = getClass().getResource("/fixture/audio.html");
 
             try {
                 return Resources.toString(fixture, Charsets.UTF_8);
@@ -78,7 +76,7 @@ public class VkRepositoryTest {
                 return "";
             }
 
-            URL fixture = getClass().getResource("/fixture/community.html");
+            URL fixture = getClass().getResource("/fixture/wall.html");
 
             try {
                 return Resources.toString(fixture, Charsets.UTF_8);
@@ -88,8 +86,18 @@ public class VkRepositoryTest {
         }
 
         @Override
-        public CompletableFuture<Credential> login(String username, String password) {
-            return CompletableFuture.supplyAsync(Credential::new);
+        public Boolean login(String username, String password) {
+            return true;
+        }
+
+        @Override
+        public int getUid() {
+            return 444529088;
+        }
+
+        @Override
+        public String getRemixSid() {
+            return "";
         }
     }
 

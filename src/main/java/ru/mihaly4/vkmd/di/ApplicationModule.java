@@ -1,7 +1,6 @@
 package ru.mihaly4.vkmd.di;
 
 import ru.mihaly4.vkmd.client.VkClient;
-import ru.mihaly4.vkmd.config.PackageConfig;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.MemoryLogger;
 import ru.mihaly4.vkmd.menu.MainMenu;
@@ -43,22 +42,15 @@ public class ApplicationModule {
     public VkRepository prodideVkRepository(
             VkClient vkClient,
             VkMusicLinkDecoder vkMusicLinkDecoder,
-            MemoryLogger logger,
-            PackageConfig config
+            MemoryLogger logger
     ) {
-        return new VkRepository(vkClient, vkMusicLinkDecoder, logger, config.getVkUid());
+        return new VkRepository(vkClient, vkMusicLinkDecoder, logger);
     }
 
     @Provides
     @SharedScope
-    public VkClient provideVkClient(PackageConfig config) {
-        return new VkClient(config.getVkRemixSid());
-    }
-
-    @Provides
-    @SharedScope
-    public PackageConfig providePackageConfig() {
-        return new PackageConfig();
+    public VkClient provideVkClient() {
+        return new VkClient();
     }
 
     @Provides
