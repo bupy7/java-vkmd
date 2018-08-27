@@ -11,6 +11,8 @@ import dagger.Module;
 import dagger.Provides;
 import javafx.stage.Stage;
 
+import javax.inject.Singleton;
+
 @Module
 public class ApplicationModule {
     private Stage primaryStage;
@@ -20,25 +22,25 @@ public class ApplicationModule {
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public MainView provideMainView() {
         return new MainView(primaryStage);
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public MainMenu provideMainMenu(AboutView aboutView) {
         return new MainMenu(aboutView);
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public VkMusicLinkDecoder provideVkMusicLinkDecoder() {
         return new VkMusicLinkDecoder();
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public VkRepository prodideVkRepository(
             VkClient vkClient,
             VkMusicLinkDecoder vkMusicLinkDecoder,
@@ -48,19 +50,19 @@ public class ApplicationModule {
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public VkClient provideVkClient() {
         return new VkClient();
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public MemoryLogger provideMemoryLogger() {
         return new MemoryLogger();
     }
 
     @Provides
-    @SharedScope
+    @Singleton
     public AboutView provideAboutView() {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);

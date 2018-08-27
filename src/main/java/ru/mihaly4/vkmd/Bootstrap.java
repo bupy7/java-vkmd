@@ -5,7 +5,6 @@ import ru.mihaly4.vkmd.di.ApplicationModule;
 import ru.mihaly4.vkmd.di.DaggerApplicationComponent;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ru.mihaly4.vkmd.view.AbstractView;
 
 public class Bootstrap extends Application {
     @Override
