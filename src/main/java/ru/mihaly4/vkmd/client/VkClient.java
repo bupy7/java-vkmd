@@ -4,6 +4,9 @@ import okhttp3.*;
 import ru.mihaly4.vkmd.parse.LoginParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VkClient implements IVkClient {
     private static final String BASE_AUDIO_URL = "https://m.vk.com/audios";
@@ -66,21 +69,34 @@ public class VkClient implements IVkClient {
                 .addHeader("User-Agent", USER_AGENT)
                 .get()
                 .build();
+        OkHttpClient httpClient = new OkHttpClient()
+                .newBuilder()
+                .cookieJar(new CookieJar() {
+                    private final ArrayList<Cookie> cookieStore = new ArrayList<>();
+
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        cookieStore.clear();
+                        cookieStore.addAll(cookies);
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        return cookieStore;
+                    }
+                })
+                .build();
         Response response;
         String loginUrl = "";
-        String cookie = "";
         try {
-            response = getHttpClient().newCall(request).execute();
+            response = httpClient.newCall(request).execute();
             if (response.isSuccessful()) {
                 loginUrl = LoginParser.parseUrl(response.body().string());
-                if (response.header("Cookie") != null) {
-                    cookie = response.header("Cookie");
-                }
             }
         } catch (IOException | NullPointerException e) {
             return false;
         }
-        if (loginUrl.isEmpty() || cookie.isEmpty()) {
+        if (loginUrl.isEmpty()) {
             return false;
         }
 
@@ -92,17 +108,16 @@ public class VkClient implements IVkClient {
         request = new Request.Builder()
                 .url(loginUrl)
                 .addHeader("User-Agent", USER_AGENT)
-                .addHeader("Cookie", cookie)
                 .post(body)
                 .build();
         int uid = 0;
         String remixSid = "";
         try {
-            response = getHttpClient().newCall(request).execute();
+            response = httpClient.newCall(request).execute();
             if (response.isSuccessful()) {
                 uid = LoginParser.parseUid(response.body().string());
-                if (response.header("Cookie") != null) {
-                    remixSid = LoginParser.parseRemixSid(response.header("Cookie"));
+                if (response.priorResponse() != null && response.priorResponse().header("Set-Cookie") != null) {
+                    remixSid = LoginParser.parseRemixSid(extractCookie(response.priorResponse().headers("Set-Cookie")));
                 }
             }
         } catch (IOException | NullPointerException e) {
@@ -138,5 +153,16 @@ public class VkClient implements IVkClient {
                     .build();
         }
         return httpClient;
+    }
+
+    private String extractCookie(List<String> setCookies) {
+        List<String> cookies = setCookies
+                .stream()
+                .map(mapper -> {
+                    String[] result = mapper.split(";");
+                    return result.length == 0 ? "" : result[0];
+                })
+                .collect(Collectors.toList());
+        return String.join("; ", cookies);
     }
 }

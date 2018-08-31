@@ -4,8 +4,11 @@ import ru.mihaly4.vkmd.client.VkClient;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.MemoryLogger;
 import ru.mihaly4.vkmd.menu.MainMenu;
+import ru.mihaly4.vkmd.presenter.LoginPresenter;
+import ru.mihaly4.vkmd.presenter.MainPresenter;
 import ru.mihaly4.vkmd.repository.VkRepository;
 import ru.mihaly4.vkmd.view.AboutView;
+import ru.mihaly4.vkmd.view.LoginView;
 import ru.mihaly4.vkmd.view.MainView;
 import dagger.Module;
 import dagger.Provides;
@@ -23,8 +26,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public MainView provideMainView() {
-        return new MainView(primaryStage);
+    public MainView provideMainView(MainPresenter mainPresenter, LoginView loginView) {
+        return new MainView(primaryStage, mainPresenter, loginView);
     }
 
     @Provides
@@ -67,5 +70,24 @@ public class ApplicationModule {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
         return new AboutView(stage);
+    }
+
+    @Provides
+    @Singleton
+    public LoginView provideLoginView(LoginPresenter loginPresenter) {
+        Stage stage = new Stage();
+        stage.initOwner(primaryStage);
+
+        return new LoginView(stage, loginPresenter);
+    }
+
+    @Provides
+    public MainPresenter provideMainPresenter(VkClient vkClient) {
+        return new MainPresenter(vkClient);
+    }
+
+    @Provides
+    public LoginPresenter provideLoginPresenter(VkClient vkClient) {
+        return new LoginPresenter(vkClient);
     }
 }

@@ -31,28 +31,6 @@ public abstract class AbstractView {
      */
     protected abstract Parent onCreate();
 
-    protected void create() {
-        if (!created) {
-            root = onCreate();
-
-            created = true;
-        }
-    }
-
-    protected void start() {
-        if (scene == null) {
-            onStart(root);
-
-            scene = root.getScene();
-        } else {
-            stage.setScene(scene);
-        }
-    }
-
-    protected void resume() {
-        onResume(root);
-    }
-
     /**
      * Initiate scene.
      */
@@ -65,5 +43,27 @@ public abstract class AbstractView {
      */
     protected void onResume(Parent root) {
         // nothing
+    }
+
+    private void create() {
+        if (!created) {
+            root = onCreate();
+
+            created = true;
+        }
+    }
+
+    private void start() {
+        if (scene == null) {
+            onStart(root);
+
+            scene = root.getScene();
+        } else {
+            stage.setScene(scene);
+        }
+    }
+
+    private void resume() {
+        onResume(root);
     }
 }

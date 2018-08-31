@@ -21,6 +21,8 @@ public class AboutView extends AbstractView implements IAboutView {
 
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
+
+        stage.setTitle("About");
     }
 
     @Override
