@@ -94,11 +94,6 @@ public class VkRepositoryTest {
         public int getUid() {
             return 444529088;
         }
-
-        @Override
-        public String getRemixSid() {
-            return "";
-        }
     }
 
     private static class DummyLogger implements ILogger {

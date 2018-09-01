@@ -1,4 +1,4 @@
-package ru.mihaly4.vkmd.parse;
+package ru.mihaly4.vkmd.parser;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

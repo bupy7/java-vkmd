@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.view;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,6 +21,10 @@ import ru.mihaly4.vkmd.presenter.MainPresenter;
 public class MainView extends AbstractView implements IMainView {
     private MainPresenter presenter;
     private LoginView loginView;
+    private TextField urlTxtField;
+    private ListView<String> inList;
+    private ListView<String> outList;
+    private Text statusTxt;
 
     public MainView(Stage stage, MainPresenter presenter, LoginView loginView) {
         super(stage);
@@ -31,6 +36,11 @@ public class MainView extends AbstractView implements IMainView {
 
         stage.setTitle(R.APP_TITLE);
         stage.getIcons().add(new Image(getClass().getResourceAsStream(R.APP_ICON)));
+    }
+
+    @Override
+    public void setStatus(String status) {
+        Platform.runLater(() -> statusTxt.setText(status));
     }
 
     @Override
@@ -56,7 +66,7 @@ public class MainView extends AbstractView implements IMainView {
     }
 
     private Node inputRender() {
-        TextField urlTxtField = new TextField();
+        urlTxtField = new TextField();
         urlTxtField.setPromptText("URL");
 
         return urlTxtField;
@@ -71,6 +81,12 @@ public class MainView extends AbstractView implements IMainView {
         parseBtn.setOnAction(value -> {
             if (!presenter.isLogged()) {
                 loginView.show();
+            } else {
+//                presenter.parseAudioLinks(urlTxtField.getText())
+//                        .thenAccept(links
+//                                -> links.forEach((link, tags)
+//                                -> inList.getItems().add(String.join(" - ", tags)))
+//                        );
             }
         });
         hbox.getChildren().add(parseBtn);
@@ -79,7 +95,7 @@ public class MainView extends AbstractView implements IMainView {
         downloadBtn.setText("Download");
         hbox.getChildren().add(downloadBtn);
 
-        Text statusTxt = new Text();
+        statusTxt = new Text();
         hbox.getChildren().add(statusTxt);
 
         return hbox;
@@ -89,7 +105,7 @@ public class MainView extends AbstractView implements IMainView {
         HBox hbox = new HBox(5);
         hbox.prefHeightProperty().bind(parent.heightProperty());
 
-        ListView inList = new ListView();
+        inList = new ListView<>();
         inList.prefWidthProperty().bind(hbox.widthProperty());
         hbox.getChildren().add(inList);
 
@@ -106,7 +122,7 @@ public class MainView extends AbstractView implements IMainView {
 
         hbox.getChildren().add(vbox);
 
-        ListView outList = new ListView();
+        outList = new ListView<>();
         outList.prefWidthProperty().bind(hbox.widthProperty());
         hbox.getChildren().add(outList);
 

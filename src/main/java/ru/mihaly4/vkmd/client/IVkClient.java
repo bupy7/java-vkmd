@@ -5,5 +5,4 @@ public interface IVkClient {
     String fromWall(String id, int offset);
     Boolean login(String username, String password);
     int getUid();
-    String getRemixSid();
 }

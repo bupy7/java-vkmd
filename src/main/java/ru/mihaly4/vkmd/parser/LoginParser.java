@@ -1,4 +1,4 @@
-package ru.mihaly4.vkmd.parse;
+package ru.mihaly4.vkmd.parser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

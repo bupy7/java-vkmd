@@ -1,21 +1,21 @@
 package ru.mihaly4.vkmd.client;
 
 import okhttp3.*;
-import ru.mihaly4.vkmd.parse.LoginParser;
+import ru.mihaly4.vkmd.parser.LoginParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class VkClient implements IVkClient {
     private static final String BASE_AUDIO_URL = "https://m.vk.com/audios";
     private static final String BASE_WALL_URL = "https://m.vk.com/";
     private static final String PING_URL = "https://m.vk.com/";
-    private static final String USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26"
-            + " (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25";
+    private static final String COOKIE_REMIX_M_DEVICE = "375/667/1/!!-!!!!";
 
-    private String remixSid = "";
     private int uid = 0;
     private OkHttpClient httpClient;
 
@@ -23,7 +23,6 @@ public class VkClient implements IVkClient {
     public String fromAudio(int id, int offset) {
         Request request = new Request.Builder()
                 .url(BASE_AUDIO_URL + id + "?offset=" + offset)
-                .addHeader("Cookie", "remixsid=" + remixSid)
                 .get()
                 .build();
         Response response;
@@ -44,7 +43,6 @@ public class VkClient implements IVkClient {
     public String fromWall(String id, int offset) {
         Request request = new Request.Builder()
                 .url(BASE_WALL_URL + id + "?offset=" + offset)
-                .addHeader("Cookie", "remixsid=" + remixSid + ";remixmdevice=375/667/1/!!-!!!!")
                 .get()
                 .build();
         Response response;
@@ -66,30 +64,12 @@ public class VkClient implements IVkClient {
         // extract cookie and login url
         Request request = new Request.Builder()
                 .url(PING_URL)
-                .addHeader("User-Agent", USER_AGENT)
                 .get()
-                .build();
-        OkHttpClient httpClient = new OkHttpClient()
-                .newBuilder()
-                .cookieJar(new CookieJar() {
-                    private final ArrayList<Cookie> cookieStore = new ArrayList<>();
-
-                    @Override
-                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                        cookieStore.clear();
-                        cookieStore.addAll(cookies);
-                    }
-
-                    @Override
-                    public List<Cookie> loadForRequest(HttpUrl url) {
-                        return cookieStore;
-                    }
-                })
                 .build();
         Response response;
         String loginUrl = "";
         try {
-            response = httpClient.newCall(request).execute();
+            response = getHttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 loginUrl = LoginParser.parseUrl(response.body().string());
             }
@@ -107,18 +87,15 @@ public class VkClient implements IVkClient {
                 .build();
         request = new Request.Builder()
                 .url(loginUrl)
-                .addHeader("User-Agent", USER_AGENT)
                 .post(body)
                 .build();
         int uid = 0;
         String remixSid = "";
         try {
-            response = httpClient.newCall(request).execute();
+            response = getHttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 uid = LoginParser.parseUid(response.body().string());
-                if (response.priorResponse() != null && response.priorResponse().header("Set-Cookie") != null) {
-                    remixSid = LoginParser.parseRemixSid(extractCookie(response.priorResponse().headers("Set-Cookie")));
-                }
+                remixSid = extractRemixSid(response.priorResponse());
             }
         } catch (IOException | NullPointerException e) {
             return false;
@@ -129,14 +106,8 @@ public class VkClient implements IVkClient {
         }
 
         this.uid = uid;
-        this.remixSid = remixSid;
 
         return true;
-    }
-
-    @Override
-    public String getRemixSid() {
-        return remixSid;
     }
 
     @Override
@@ -148,11 +119,51 @@ public class VkClient implements IVkClient {
         if (httpClient == null) {
             httpClient = new OkHttpClient()
                     .newBuilder()
-                    .followRedirects(false)
-                    .followSslRedirects(false)
+                    .cookieJar(new CookieJar() {
+                        private final Map<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
+
+                        @Override
+                        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                            cookieStore.put(url, cookies);
+                        }
+
+                        @Override
+                        public List<Cookie> loadForRequest(HttpUrl url) {
+                            List<Cookie> result = new ArrayList<>();
+
+                            cookieStore.values().forEach(cookies -> cookies.forEach(cookie -> {
+                                if (cookie.matches(url)) {
+                                    result.add(cookie);
+                                }
+                            }));
+
+                            result.add(new Cookie.Builder()
+                                    .name("remixmdevice")
+                                    .domain("vk.com")
+                                    .value(COOKIE_REMIX_M_DEVICE)
+                                    .build()
+                            );
+
+                            return result;
+                        }
+                    })
                     .build();
         }
         return httpClient;
+    }
+
+    private String extractRemixSid(Response response) {
+        if (response != null && response.header("Set-Cookie") != null) {
+            String remixSid = LoginParser.parseRemixSid(extractCookie(response.headers("Set-Cookie")));
+
+            if (remixSid.isEmpty()) {
+                return extractRemixSid(response.priorResponse());
+            }
+
+            return remixSid;
+        }
+
+        return "";
     }
 
     private String extractCookie(List<String> setCookies) {
