@@ -2,7 +2,7 @@ package ru.mihaly4.vkmd.presenter;
 
 import ru.mihaly4.vkmd.client.IVkClient;
 import ru.mihaly4.vkmd.model.Target;
-import ru.mihaly4.vkmd.parser.ParseParser;
+import ru.mihaly4.vkmd.parser.TargetParser;
 import ru.mihaly4.vkmd.repository.VkRepository;
 import ru.mihaly4.vkmd.view.IMainView;
 
@@ -26,7 +26,7 @@ public class MainPresenter extends AbstractPresenter<IMainView> {
     public CompletableFuture<Map<String, String[]>> parseAudioLinks(String url) {
         view.setStatus("Parsing...");
 
-        Target target = ParseParser.parseTarget(url);
+        Target target = TargetParser.parseTarget(url);
 
         if (target != null) {
             if (target.isAudioType()) {
