@@ -3,9 +3,10 @@ package ru.mihaly4.vkmd.view;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractView {
+public abstract class AbstractView implements IView {
     protected Stage stage;
     @Nullable
     private Scene scene;
@@ -14,8 +15,11 @@ public abstract class AbstractView {
 
     AbstractView(Stage stage) {
         this.stage = stage;
+
+        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, this::onStop);
     }
 
+    @Override
     public void show() {
         create();
         start();
@@ -23,6 +27,11 @@ public abstract class AbstractView {
         stage.show();
 
         resume();
+    }
+
+    @Override
+    public void hide() {
+        stage.close();
     }
 
     /**
@@ -42,6 +51,13 @@ public abstract class AbstractView {
      * Here you can set focus on any element or something else.
      */
     protected void onResume(Parent root) {
+        // nothing
+    }
+
+    /**
+     * Closing window.
+     */
+    protected void onStop(WindowEvent event) {
         // nothing
     }
 
