@@ -16,7 +16,7 @@ public abstract class AbstractView implements IView {
     AbstractView(Stage stage) {
         this.stage = stage;
 
-        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, this::onStop);
+        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, (event) -> onStop());
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class AbstractView implements IView {
     /**
      * Closing window.
      */
-    protected void onStop(WindowEvent event) {
+    protected void onStop() {
         // nothing
     }
 
