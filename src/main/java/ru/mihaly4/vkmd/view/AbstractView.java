@@ -20,13 +20,22 @@ public abstract class AbstractView implements IView {
     }
 
     @Override
-    public void show() {
+    public void show(boolean wait) {
         create();
         start();
 
-        stage.show();
+        if (wait) {
+            stage.showAndWait();
+        } else {
+            stage.show();
+        }
 
         resume();
+    }
+
+    @Override
+    public void show() {
+        show(false);
     }
 
     @Override

@@ -80,13 +80,15 @@ public class MainView extends AbstractView implements IMainView {
         parseBtn.setText("Parse");
         parseBtn.setOnAction(value -> {
             if (!presenter.isLogged()) {
-                loginView.show();
-            } else {
-//                presenter.parseAudioLinks(urlTxtField.getText())
-//                        .thenAccept(links
-//                                -> links.forEach((link, tags)
-//                                -> inList.getItems().add(String.join(" - ", tags)))
-//                        );
+                loginView.show(true); // @TODO: Replace to Event Bus
+            }
+            // @TODO: Replace to Event Bus
+            if (presenter.isLogged()) {
+                presenter.parseAudioLinks(urlTxtField.getText())
+                        .thenAccept(links
+                                -> links.forEach((link, tags)
+                                -> inList.getItems().add(String.join(" - ", tags)))
+                        );
             }
         });
         hbox.getChildren().add(parseBtn);
