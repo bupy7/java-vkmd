@@ -29,14 +29,14 @@ public class VkRepository {
     }
 
     public CompletableFuture<Map<String, String[]>> findAllByWall(String id) {
-        return findAll(page -> client.fromWall(id, WALL_LIMIT * page));
+        return findAll(page -> client.fromWall(id, WALL_LIMIT * page), ".wi_body .audio_item .ai_body");
     }
 
     public CompletableFuture<Map<String, String[]>> findAllByAudio(int id) {
-        return findAll(page -> client.fromAudio(id, AUDIO_LIMIT * page));
+        return findAll(page -> client.fromAudio(id, AUDIO_LIMIT * page), ".audios_list .audio_item .ai_body");
     }
 
-    private CompletableFuture<Map<String, String[]>> findAll(IFetcher fetcher) {
+    private CompletableFuture<Map<String, String[]>> findAll(IFetcher fetcher, String selector) {
         return CompletableFuture.supplyAsync(() -> {
             final Map<String, String[]> links = new HashMap<>();
             int oldLinkSize = 0;
@@ -47,7 +47,7 @@ public class VkRepository {
 
                 Document doc = Jsoup.parse(fetcher.fetch(page++));
 
-                Elements tracks = doc.select(".audio_item .ai_body");
+                Elements tracks = doc.select(selector);
 
                 for (int i = 0; i != tracks.size(); i++) {
                     Element track = tracks.get(i);

@@ -82,8 +82,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    public MainPresenter provideMainPresenter(VkClient vkClient, VkRepository vkRepository) {
-        return new MainPresenter(vkClient, vkRepository);
+    public MainPresenter provideMainPresenter(VkClient vkClient, VkRepository vkRepository, MemoryLogger logger) {
+        return new MainPresenter(vkClient, vkRepository, logger);
     }
 
     @Provides

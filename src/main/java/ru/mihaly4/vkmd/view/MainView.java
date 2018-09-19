@@ -14,17 +14,24 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ru.mihaly4.vkmd.R;
+import ru.mihaly4.vkmd.model.Link;
 import ru.mihaly4.vkmd.presenter.MainPresenter;
+
+import java.io.File;
 
 public class MainView extends AbstractView implements IMainView {
     private MainPresenter presenter;
     private LoginView loginView;
     private TextField urlTxtField;
-    private ListView<String> inList;
-    private ListView<String> outList;
+    private ListView<Link> inList;
+    private ListView<Link> outList;
     private Text statusTxt;
+    private Button downloadBtn;
+
+    private static final int DOUBLE_CLICK = 2;
 
     public MainView(Stage stage, MainPresenter presenter, LoginView loginView) {
         super(stage);
@@ -78,7 +85,7 @@ public class MainView extends AbstractView implements IMainView {
 
         Button parseBtn = new Button();
         parseBtn.setText("Parse");
-        parseBtn.setOnAction(value -> {
+        parseBtn.setOnAction(event -> {
             if (!presenter.isLogged()) {
                 loginView.show(true); // @TODO: Replace to Event Bus
             }
@@ -87,14 +94,27 @@ public class MainView extends AbstractView implements IMainView {
                 presenter.parseAudioLinks(urlTxtField.getText())
                         .thenAccept(links
                                 -> links.forEach((link, tags)
-                                -> inList.getItems().add(String.join(" - ", tags)))
+                                        -> inList.getItems().add(new Link(link, String.join(" - ", tags))))
                         );
             }
         });
         hbox.getChildren().add(parseBtn);
 
-        Button downloadBtn = new Button();
+        downloadBtn = new Button();
         downloadBtn.setText("Download");
+        downloadBtn.setOnAction(event -> {
+            DirectoryChooser chooser = new DirectoryChooser();
+            chooser.setTitle("Choose folder to save music tracks");
+
+            File selectedDirectory = chooser.showDialog(stage);
+
+            if (selectedDirectory != null && selectedDirectory.canWrite()) {
+                lock();
+                presenter.download(selectedDirectory, outList.getItems().toArray(new Link[0])).thenAccept(result -> {
+                    unlock();
+                });
+            }
+        });
         hbox.getChildren().add(downloadBtn);
 
         statusTxt = new Text();
@@ -109,6 +129,17 @@ public class MainView extends AbstractView implements IMainView {
 
         inList = new ListView<>();
         inList.prefWidthProperty().bind(hbox.widthProperty());
+        inList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == DOUBLE_CLICK) {
+                Link selected = inList.getSelectionModel().getSelectedItem();
+                if (selected == null) {
+                    return;
+                }
+
+                inList.getItems().remove(selected);
+                outList.getItems().add(selected);
+            }
+        });
         hbox.getChildren().add(inList);
 
         VBox vbox = new VBox(5);
@@ -116,18 +147,45 @@ public class MainView extends AbstractView implements IMainView {
 
         Button allToOutBtn = new Button();
         allToOutBtn.setText(">>");
+        allToOutBtn.setOnAction(event -> {
+            outList.getItems().setAll(inList.getItems().toArray(new Link[0]));
+            inList.getItems().clear();
+        });
         vbox.getChildren().add(allToOutBtn);
 
         Button clearOutBtn = new Button();
         clearOutBtn.setText("<<");
+        clearOutBtn.setOnAction(event -> {
+            inList.getItems().setAll(outList.getItems().toArray(new Link[0]));
+            outList.getItems().clear();
+        });
         vbox.getChildren().add(clearOutBtn);
 
         hbox.getChildren().add(vbox);
 
         outList = new ListView<>();
         outList.prefWidthProperty().bind(hbox.widthProperty());
+        outList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == DOUBLE_CLICK) {
+                Link selected = outList.getSelectionModel().getSelectedItem();
+                if (selected == null) {
+                    return;
+                }
+
+                outList.getItems().remove(selected);
+                inList.getItems().add(selected);
+            }
+        });
         hbox.getChildren().add(outList);
 
         return hbox;
+    }
+
+    private void lock() {
+        downloadBtn.setDisable(true);
+    }
+
+    private void unlock() {
+        Platform.runLater(() -> downloadBtn.setDisable(false));
     }
 }
