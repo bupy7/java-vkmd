@@ -1,9 +1,11 @@
 java-vkmd
-==============
+=========
 
 [![Build Status](https://travis-ci.org/bupy7/java-vkmd.svg?branch=master)](https://travis-ci.org/bupy7/java-vkmd)
 
 A lighten music downloader for Vkontakte.
+
+![java-vkmd](screenshot.gif)
 
 Requirements
 ------------
