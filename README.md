@@ -5,7 +5,7 @@ java-vkmd
 
 A lighten music downloader for Vkontakte.
 
-![java-vkmd](screenshot.png)
+![java-vkmd](screenshot.gif)
 
 Requirements
 ------------
