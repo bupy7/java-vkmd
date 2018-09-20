@@ -71,7 +71,8 @@ public class MainPresenter extends AbstractPresenter<IMainView> {
                     URL fileUrl = new URL(links[i].getUrl());
                     ReadableByteChannel rbc = Channels.newChannel(fileUrl.openStream());
                     FileOutputStream fos = new FileOutputStream(directory.getAbsolutePath()
-                            + "/" + links[i].getName()
+                            + File.separator
+                            + links[i].getName()
                             + ".mp3");
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                     fos.close();
