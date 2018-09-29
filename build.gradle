@@ -59,7 +59,7 @@ task copyDependencies(type: Copy) {
 }
 
 task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
-    group = 'Deploy'
+    group = 'Distribution'
     description = 'Packaging your application in the executable file'
 
     def nativeType = ''
