@@ -6,18 +6,18 @@
  * user guide available at https://docs.gradle.org/4.3.1/userguide/tutorial_java_projects.html
  */
 
+// apply plugins
 plugins {
     id "net.ltgt.apt" version "0.10"
 }
-
-// apply plugins
 apply plugin: 'java'
 apply plugin: 'java-library'
 apply plugin: 'application'
 apply plugin: 'idea'
 
 // package config params
-version = '1.0.0'
+group = 'ru.mihaly4'
+version = '1.0.1'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -56,9 +56,50 @@ jar {
     }
 }
 
-// run task
-run {
-    if (project.hasProperty("runargs")) {
-        args runargs.split(',')
+task copyDependencies(type: Copy) {
+    from sourceSets.getByName('main').compileClasspath
+    into libsDir
+}
+
+task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
+    group = 'Deploy'
+    description = 'Packaging your application in the executable file'
+
+    def nativeType = ''
+    def icon = ''
+
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        nativeType = 'exe'
     }
+    if (System.properties['os.name'].toLowerCase().contains('mac')) {
+        nativeType = 'dmg'
+        icon = "mac/app.icns"
+    }
+    if (System.properties['os.name'].toLowerCase().contains('linux')) {
+        nativeType = 'deb'
+    }
+
+    def dependencies = []
+    sourceSets.getByName('main').compileClasspath.forEach({file ->
+        dependencies.add('-srcfiles')
+        dependencies.add(file.getName())
+    })
+
+    workingDir project.projectDir
+    def primaryArgs = [
+            'javapackager',
+            '-deploy',
+            '-nosign',
+            '-native', nativeType,
+            '-outdir', "${buildDir}/distribution",
+            '-outfile', project.name,
+            '-vendor', project.group,
+            '-name', 'VK Music Downloader',
+            '-appclass', mainClassName,
+            '-srcdir', libsDir,
+            '-srcfiles', jar.archiveName,
+            '-BappVersion=' + version,
+            '-Bicon=' + (icon.equals('') ? '' : "${rootDir}/resources/deploy/${icon}")
+    ] as List<String>
+    commandLine = primaryArgs + dependencies
 }

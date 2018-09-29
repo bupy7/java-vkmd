@@ -22,7 +22,7 @@ $ ./vkmd
 Developing
 ----------
 
-- Gradle >= 4.3.1
+- Gradle >= 4.10.2
 
 ### Build
 
