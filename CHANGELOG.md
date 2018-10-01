@@ -1,6 +1,12 @@
 java-vkmd
 =========
 
+1.0.2 [2018-10-??]
+------------------
+
+- Add: Windows and Linux app icons.
+- Add: Package builder for Windows and Linux.
+
 1.0.1 [2018-09-30]
 ------------------
 

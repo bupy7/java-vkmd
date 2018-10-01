@@ -67,6 +67,7 @@ task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
 
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         nativeType = 'exe'
+        icon = "windows/app.ico"
     }
     if (System.properties['os.name'].toLowerCase().contains('mac')) {
         nativeType = 'dmg'
@@ -74,6 +75,7 @@ task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
     }
     if (System.properties['os.name'].toLowerCase().contains('linux')) {
         nativeType = 'deb'
+        icon = "linux/app.png"
     }
 
     def dependencies = []
