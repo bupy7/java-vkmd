@@ -7,6 +7,9 @@
  */
 
 // apply plugins
+plugins {
+    id 'net.ltgt.apt-idea' version '0.18'
+}
 apply plugin: 'java'
 apply plugin: 'java-library'
 apply plugin: 'application'
@@ -30,11 +33,12 @@ dependencies {
     implementation 'com.google.guava:guava:24.1-jre'
     implementation 'com.intellij:annotations:+@jar'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.google.dagger:dagger:2.15'
+    implementation 'com.google.dagger:dagger:2.17'
     implementation 'de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.6'
     implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
 
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
 
     testImplementation 'junit:junit:4.12'
     // testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
@@ -49,7 +53,7 @@ jar {
 
     manifest {
         attributes 'Main-Class': mainClassName,
-                'Class-Path': sourceSets.main.runtimeClasspath.join(' ')
+                'Class-Path': sourceSets.getByName('main').runtimeClasspath.join(' ')
     }
 }
 

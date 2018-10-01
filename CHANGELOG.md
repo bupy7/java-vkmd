@@ -6,6 +6,7 @@ java-vkmd
 
 - Add: Windows and Linux app icons.
 - Add: Package builder for Windows and Linux.
+- Add: The about button in controls.
 
 1.0.1 [2018-09-30]
 ------------------

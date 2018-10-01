@@ -26,8 +26,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public MainView provideMainView(MainPresenter mainPresenter, LoginView loginView) {
-        return new MainView(primaryStage, mainPresenter, loginView);
+    public MainView provideMainView(MainPresenter mainPresenter, LoginView loginView, AboutView aboutView) {
+        return new MainView(primaryStage, mainPresenter, loginView, aboutView);
     }
 
     @Provides

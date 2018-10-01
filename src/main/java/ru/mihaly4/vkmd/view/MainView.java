@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.SystemUtils;
 import ru.mihaly4.vkmd.R;
 import ru.mihaly4.vkmd.model.Link;
 import ru.mihaly4.vkmd.presenter.MainPresenter;
@@ -25,6 +26,7 @@ import java.io.File;
 public class MainView extends AbstractView implements IMainView {
     private MainPresenter presenter;
     private LoginView loginView;
+    private AboutView aboutView;
     private TextField urlTxtField;
     private ListView<Link> inList;
     private ListView<Link> outList;
@@ -33,10 +35,11 @@ public class MainView extends AbstractView implements IMainView {
 
     private static final int DOUBLE_CLICK = 2;
 
-    public MainView(Stage stage, MainPresenter presenter, LoginView loginView) {
+    public MainView(Stage stage, MainPresenter presenter, LoginView loginView, AboutView aboutView) {
         super(stage);
 
         this.loginView = loginView;
+        this.aboutView = aboutView;
 
         presenter.bindView(this);
         this.presenter = presenter;
@@ -55,7 +58,7 @@ public class MainView extends AbstractView implements IMainView {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
 
-        vbox.getChildren().addAll(inputRender(), controlRender(), listRender(vbox));
+        vbox.getChildren().addAll(renderInput(), renderControl(), renderList(vbox));
 
         return vbox;
     }
@@ -72,19 +75,18 @@ public class MainView extends AbstractView implements IMainView {
         root.requestFocus();
     }
 
-    private Node inputRender() {
+    private Node renderInput() {
         urlTxtField = new TextField();
         urlTxtField.setPromptText("URL");
 
         return urlTxtField;
     }
 
-    private Node controlRender() {
+    private Node renderControl() {
         HBox hbox = new HBox(5);
         hbox.setAlignment(Pos.CENTER_LEFT);
 
-        Button parseBtn = new Button();
-        parseBtn.setText("Parse");
+        Button parseBtn = new Button("Parse");
         parseBtn.setOnAction(event -> {
             if (!presenter.isLogged()) {
                 loginView.show(true); // @TODO: Replace to Event Bus
@@ -100,8 +102,7 @@ public class MainView extends AbstractView implements IMainView {
         });
         hbox.getChildren().add(parseBtn);
 
-        downloadBtn = new Button();
-        downloadBtn.setText("Download");
+        downloadBtn = new Button("Download");
         downloadBtn.setOnAction(event -> {
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle("Choose folder to save music tracks");
@@ -117,13 +118,22 @@ public class MainView extends AbstractView implements IMainView {
         });
         hbox.getChildren().add(downloadBtn);
 
+        // @TODO
+        if (!SystemUtils.IS_OS_MAC) {
+            Button aboutBtn = new Button("?");
+            aboutBtn.setOnAction(event -> {
+                aboutView.show();
+            });
+            hbox.getChildren().add(aboutBtn);
+        }
+
         statusTxt = new Text();
         hbox.getChildren().add(statusTxt);
 
         return hbox;
     }
 
-    private Node listRender(Region parent) {
+    private Node renderList(Region parent) {
         HBox hbox = new HBox(5);
         hbox.prefHeightProperty().bind(parent.heightProperty());
 
