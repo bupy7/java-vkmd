@@ -53,7 +53,7 @@ jar {
 
     manifest {
         attributes 'Main-Class': mainClassName,
-                'Class-Path': sourceSets.getByName('main').runtimeClasspath.join(' ')
+                'Class-Path': files(sourceSets.getByName('main').runtimeClasspath)
     }
 }
 
