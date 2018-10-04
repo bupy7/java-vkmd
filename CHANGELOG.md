@@ -1,12 +1,14 @@
 java-vkmd
 =========
 
-1.0.2 [2018-10-??]
+1.0.2 [2018-10-04]
 ------------------
 
 - Add: Windows and Linux app icons.
-- Add: Package builder for Windows and Linux.
+- Add: Package for Windows.
 - Add: The about button in controls.
+- Fix: Dependency paths.
+- Enh: Vendor name of package.
 
 1.0.1 [2018-09-30]
 ------------------
