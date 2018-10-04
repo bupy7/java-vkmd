@@ -51,10 +51,17 @@ mainClassName = 'ru.mihaly4.vkmd.Bootstrap'
 jar {
     baseName = 'vkmd'
 
+    def dependencies = []
+    sourceSets.getByName('main').compileClasspath.forEach({file ->
+        dependencies.add(file.getName())
+    })
+
     manifest {
-        attributes 'Main-Class': mainClassName,
-                'Class-Path': files(sourceSets.getByName('main').runtimeClasspath)
+        attributes 'Main-Class': mainClassName
+        attributes 'Class-Path': dependencies.join(' ')
     }
+
+    dependsOn 'copyDependencies'
 }
 
 task copyDependencies(type: Copy) {
@@ -62,16 +69,19 @@ task copyDependencies(type: Copy) {
     into libsDir
 }
 
-task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
+task deploy(type: Exec, dependsOn: [assemble]) {
     group = 'Distribution'
     description = 'Packaging your application in the executable file'
 
     def nativeType = ''
     def icon = ''
 
+    def osArgs = []
+
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         nativeType = 'exe'
         icon = "windows/app.ico"
+        osArgs.add('-BsystemWide=true')
     }
     if (System.properties['os.name'].toLowerCase().contains('mac')) {
         nativeType = 'dmg'
@@ -104,5 +114,5 @@ task deploy(type: Exec, dependsOn: [assemble, copyDependencies]) {
             '-BappVersion=' + version,
             '-Bicon=' + (icon == '' ? '' : "${rootDir}/resources/deploy/${icon}")
     ] as List<String>
-    commandLine = primaryArgs + dependencies
+    commandLine = primaryArgs + osArgs + dependencies
 }
