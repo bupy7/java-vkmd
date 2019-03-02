@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.viewmodel;
 
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 import ru.mihaly4.vkmd.client.IVkClient;
 import ru.mihaly4.vkmd.log.ILogger;
@@ -29,7 +30,7 @@ public class MainViewModel {
     @Nonnull
     private PublishSubject<Map<String, String[]>> links = PublishSubject.create();
     @Nonnull
-    private PublishSubject<Boolean> isProcessing = PublishSubject.create();
+    private BehaviorSubject<Boolean> isLocked = BehaviorSubject.createDefault(true);
 
     public MainViewModel(@Nonnull IVkClient vkClient, @Nonnull VkRepository vkRepository, @Nonnull ILogger logger) {
         this.vkClient = vkClient;
@@ -44,7 +45,7 @@ public class MainViewModel {
 
     public void parseAudioLinks(@Nonnull String url) {
         new Thread(() -> {
-            isProcessing.onNext(true);
+            isLocked.onNext(true);
             status.onNext("Parsing...");
 
             Target target = TargetParser.parseTarget(url);
@@ -55,7 +56,7 @@ public class MainViewModel {
                     vkRepository.findAllByAudio(Integer.valueOf(target.getValue())).thenAccept(links -> {
                         status.onNext("");
                         this.links.onNext(links);
-                        isProcessing.onNext(false);
+                        isLocked.onNext(false);
                     });
                 }
                 if (target.isWallType()) {
@@ -63,19 +64,19 @@ public class MainViewModel {
                     vkRepository.findAllByWall(target.getValue()).thenAccept(links -> {
                         status.onNext("");
                         this.links.onNext(links);
-                        isProcessing.onNext(false);
+                        isLocked.onNext(false);
                     });
                 }
             } else {
                 status.onNext("Invalid URL");
-                isProcessing.onNext(false);
+                isLocked.onNext(false);
             }
         }).start();
     }
 
     public void download(@Nonnull File directory, @Nonnull Link[] links) {
         new Thread(() -> {
-            isProcessing.onNext(true);
+            isLocked.onNext(true);
 
             for (int i = 0; i != links.length; i++) {
                 status.onNext(String.format("Downloading %d/%d...", i, links.length));
@@ -96,7 +97,7 @@ public class MainViewModel {
             }
 
             status.onNext("Done!");
-            isProcessing.onNext(false);
+            isLocked.onNext(false);
         }).start();
     }
 
@@ -111,7 +112,11 @@ public class MainViewModel {
     }
 
     @Nonnull
-    public PublishSubject<Boolean> getIsProcessing() {
-        return isProcessing;
+    public BehaviorSubject<Boolean> getIsLocked() {
+        return isLocked;
+    }
+
+    public void unlock() {
+        isLocked.onNext(false);
     }
 }

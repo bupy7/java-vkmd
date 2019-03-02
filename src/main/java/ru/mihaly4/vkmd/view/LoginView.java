@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.view;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import javafx.geometry.Insets;
@@ -19,8 +20,6 @@ import ru.mihaly4.vkmd.viewmodel.LoginViewModel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginView extends AbstractView {
     @Nonnull
@@ -29,8 +28,8 @@ public class LoginView extends AbstractView {
     private Button loginBtn;
     @Nullable
     private Text statusTxt;
-    @Nonnull
-    private List<Disposable> subscribers = new ArrayList<>();
+    @Nullable
+    private CompositeDisposable compositeDisposable;
 
     public LoginView(@Nonnull Stage stage, @Nonnull LoginViewModel loginViewModel) {
         super(stage);
@@ -60,10 +59,7 @@ public class LoginView extends AbstractView {
         hbox.setAlignment(Pos.BASELINE_LEFT);
 
         loginBtn = new Button("Login");
-        loginBtn.setOnAction(value -> {
-            lock();
-            loginViewModel.login(phoneTxtField.getText(), passwordPassField.getText());
-        });
+        loginBtn.setOnAction(value -> loginViewModel.login(phoneTxtField.getText(), passwordPassField.getText()));
         hbox.getChildren().add(loginBtn);
 
         statusTxt = new Text();
@@ -98,28 +94,38 @@ public class LoginView extends AbstractView {
     }
 
     private void subscribeHandlers() {
+        compositeDisposable = new CompositeDisposable();
+
         Disposable disposable = loginViewModel.getStatus()
                 .observeOn(JavaFxScheduler.platform())
-                .subscribe(status -> {
-                    statusTxt.setText(status);
-                });
-        subscribers.add(disposable);
+                .subscribe(status -> statusTxt.setText(status));
+        compositeDisposable.add(disposable);
 
         disposable = loginViewModel.getIsLogin()
                 .observeOn(JavaFxScheduler.platform())
                 .subscribe(isLogin -> {
-                    unlock();
                     if (isLogin) {
                         stage.close();
                     }
                 });
-        subscribers.add(disposable);
+        compositeDisposable.add(disposable);
+
+        disposable = loginViewModel.getIsProcessing()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(isProcessing -> {
+                    if (isProcessing) {
+                        lock();
+                    } else {
+                        unlock();
+                    }
+                });
+        compositeDisposable.add(disposable);
     }
 
     private void unsubscribeHandlers() {
-        for (int i = 0; i != subscribers.size(); i++) {
-            subscribers.get(i).dispose();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+            compositeDisposable = null;
         }
-        subscribers.clear();
     }
 }

@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.view;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import javafx.geometry.Insets;
@@ -25,8 +26,6 @@ import ru.mihaly4.vkmd.viewmodel.MainViewModel;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainView extends AbstractView {
     @Nonnull
@@ -47,8 +46,10 @@ public class MainView extends AbstractView {
     private Button downloadBtn;
     @Nullable
     private Button parseBtn;
-    @Nonnull
-    private List<Disposable> subscribers = new ArrayList<>();
+    @Nullable
+    private Button loginBtn;
+    @Nullable
+    private CompositeDisposable compositeDisposable;
 
     private static final int DOUBLE_CLICK = 2;
 
@@ -108,13 +109,17 @@ public class MainView extends AbstractView {
         HBox hbox = new HBox(5);
         hbox.setAlignment(Pos.CENTER_LEFT);
 
-        parseBtn = new Button("Parse");
-        parseBtn.setOnAction(event -> {
+        loginBtn = new Button("Login");
+        loginBtn.setOnAction(event -> {
             if (!mainViewModel.isLogged()) {
                 loginView.show();
-            } else {
-                mainViewModel.parseAudioLinks(urlTxtField.getText());
             }
+        });
+        hbox.getChildren().add(loginBtn);
+
+        parseBtn = new Button("Parse");
+        parseBtn.setOnAction(event -> {
+            mainViewModel.parseAudioLinks(urlTxtField.getText());
         });
         hbox.getChildren().add(parseBtn);
 
@@ -215,23 +220,23 @@ public class MainView extends AbstractView {
     }
 
     private void subscribeHandlers() {
+        compositeDisposable = new CompositeDisposable();
+
         Disposable disposable = mainViewModel.getStatus()
                 .observeOn(JavaFxScheduler.platform())
-                .subscribe(status -> {
-                    statusTxt.setText(status);
-                });
-        subscribers.add(disposable);
+                .subscribe(status -> statusTxt.setText(status));
+        compositeDisposable.add(disposable);
 
-        disposable = mainViewModel.getIsProcessing()
+        disposable = mainViewModel.getIsLocked()
                 .observeOn(JavaFxScheduler.platform())
-                .subscribe(isDownloading -> {
-                    if (isDownloading) {
+                .subscribe(isLocked -> {
+                    if (isLocked) {
                         lock();
                     } else {
                         unlock();
                     }
                 });
-        subscribers.add(disposable);
+        compositeDisposable.add(disposable);
 
         disposable = mainViewModel.getLinks()
                 .observeOn(JavaFxScheduler.platform())
@@ -239,13 +244,13 @@ public class MainView extends AbstractView {
                     links.forEach((link, tags) -> inList.getItems()
                             .add(new Link(link, String.join(" - ", tags))));
                 });
-        subscribers.add(disposable);
+        compositeDisposable.add(disposable);
     }
 
     private void unsubscribeHandlers() {
-        for (int i = 0; i != subscribers.size(); i++) {
-            subscribers.get(i).dispose();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+            compositeDisposable = null;
         }
-        subscribers.clear();
     }
 }
