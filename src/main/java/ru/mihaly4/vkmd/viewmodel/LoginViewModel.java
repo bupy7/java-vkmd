@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.viewmodel;
 
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 import ru.mihaly4.vkmd.client.IVkClient;
 
@@ -13,7 +14,7 @@ public class LoginViewModel {
     @Nonnull
     private PublishSubject<Boolean> isLogin = PublishSubject.create();
     @Nonnull
-    private PublishSubject<Boolean> isProcessing = PublishSubject.create();
+    private BehaviorSubject<Boolean> isProcessing = BehaviorSubject.createDefault(false);
 
     public LoginViewModel(@Nonnull IVkClient vkClient) {
         this.vkClient = vkClient;
@@ -48,7 +49,7 @@ public class LoginViewModel {
     }
 
     @Nonnull
-    public PublishSubject<Boolean> getIsProcessing() {
+    public BehaviorSubject<Boolean> getIsProcessing() {
         return isProcessing;
     }
 }

@@ -77,6 +77,7 @@ public class LoginView extends AbstractView {
 
     @Override
     protected void onHidden() {
+        super.onHidden();
         unsubscribeHandlers();
     }
 
@@ -105,7 +106,7 @@ public class LoginView extends AbstractView {
                 .observeOn(JavaFxScheduler.platform())
                 .subscribe(isLogin -> {
                     if (isLogin) {
-                        stage.close();
+                        hide();
                     }
                 });
         compositeDisposable.add(disposable);

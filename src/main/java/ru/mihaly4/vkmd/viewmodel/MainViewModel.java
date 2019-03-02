@@ -119,4 +119,8 @@ public class MainViewModel {
     public void unlock() {
         isLocked.onNext(false);
     }
+
+    public void lock() {
+        isLocked.onNext(true);
+    }
 }

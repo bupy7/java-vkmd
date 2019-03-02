@@ -6,12 +6,16 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractView implements IView {
     protected Stage stage;
     @Nullable
     private Scene scene;
     private Parent root;
     private boolean created = false;
+    private List<IHiddenObserver> hiddenObservers = new ArrayList<>();
 
     AbstractView(Stage stage) {
         this.stage = stage;
@@ -31,7 +35,16 @@ public abstract class AbstractView implements IView {
 
     @Override
     public void hide() {
-        stage.close();
+        stage.hide();
+        onHidden();
+    }
+
+    public void subscribeOnHidden(IHiddenObserver observer) {
+        hiddenObservers.add(observer);
+    }
+
+    public void unsubscribeOnHidden(IHiddenObserver observer) {
+        hiddenObservers.remove(observer);
     }
 
     /**
@@ -58,7 +71,7 @@ public abstract class AbstractView implements IView {
      * Closing window.
      */
     protected void onHidden() {
-        // nothing
+        notifyHiddenObservers();
     }
 
     private void create() {
@@ -81,5 +94,13 @@ public abstract class AbstractView implements IView {
 
     private void shown() {
         onShown(root);
+    }
+
+    private void notifyHiddenObservers() {
+        hiddenObservers.forEach(observer -> observer.run());
+    }
+
+    interface IHiddenObserver {
+        void run();
     }
 }

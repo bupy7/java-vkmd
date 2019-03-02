@@ -50,6 +50,12 @@ public class MainView extends AbstractView {
     private Button loginBtn;
     @Nullable
     private CompositeDisposable compositeDisposable;
+    private LoginView.IHiddenObserver hiddenLoginViewObserver = () -> {
+        if (mainViewModel.isLogged()) {
+            loginBtn.setDisable(true);
+            mainViewModel.unlock();
+        }
+    };
 
     private static final int DOUBLE_CLICK = 2;
 
@@ -95,6 +101,7 @@ public class MainView extends AbstractView {
 
     @Override
     protected void onHidden() {
+        super.onHidden();
         unsubscribeHandlers();
     }
 
@@ -110,11 +117,7 @@ public class MainView extends AbstractView {
         hbox.setAlignment(Pos.CENTER_LEFT);
 
         loginBtn = new Button("Login");
-        loginBtn.setOnAction(event -> {
-            if (!mainViewModel.isLogged()) {
-                loginView.show();
-            }
-        });
+        loginBtn.setOnAction(event -> loginView.show());
         hbox.getChildren().add(loginBtn);
 
         parseBtn = new Button("Parse");
@@ -245,6 +248,8 @@ public class MainView extends AbstractView {
                             .add(new Link(link, String.join(" - ", tags))));
                 });
         compositeDisposable.add(disposable);
+
+        loginView.subscribeOnHidden(hiddenLoginViewObserver);
     }
 
     private void unsubscribeHandlers() {
@@ -252,5 +257,6 @@ public class MainView extends AbstractView {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
+        loginView.unsubscribeOnHidden(hiddenLoginViewObserver);
     }
 }
