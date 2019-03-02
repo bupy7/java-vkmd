@@ -24,11 +24,10 @@ public class LoginViewModel {
             if (vkClient.login(username, password)) {
                 status.onNext("");
                 isLogin.onNext(true);
+            } else {
+                status.onNext("Invalid credentials");
+                isLogin.onNext(false);
             }
-
-            status.onNext("Invalid credentials");
-
-            isLogin.onNext(false);
         }).start();
     }
 

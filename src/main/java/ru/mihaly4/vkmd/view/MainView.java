@@ -1,7 +1,7 @@
 package ru.mihaly4.vkmd.view;
 
 import io.reactivex.disposables.Disposable;
-import javafx.application.Platform;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainView extends AbstractView implements IMainView {
+public class MainView extends AbstractView {
     @Nonnull
     private MainViewModel mainViewModel;
     @Nonnull
@@ -45,6 +45,8 @@ public class MainView extends AbstractView implements IMainView {
     private Text statusTxt;
     @Nullable
     private Button downloadBtn;
+    @Nullable
+    private Button parseBtn;
     @Nonnull
     private List<Disposable> subscribers = new ArrayList<>();
 
@@ -65,11 +67,6 @@ public class MainView extends AbstractView implements IMainView {
 
         stage.setTitle(R.APP_TITLE);
         stage.getIcons().add(new Image(getClass().getResourceAsStream(R.APP_ICON)));
-    }
-
-    @Override
-    public void setStatus(String status) {
-        Platform.runLater(() -> statusTxt.setText(status));
     }
 
     @Override
@@ -111,7 +108,7 @@ public class MainView extends AbstractView implements IMainView {
         HBox hbox = new HBox(5);
         hbox.setAlignment(Pos.CENTER_LEFT);
 
-        Button parseBtn = new Button("Parse");
+        parseBtn = new Button("Parse");
         parseBtn.setOnAction(event -> {
             if (!mainViewModel.isLogged()) {
                 loginView.show();
@@ -209,30 +206,39 @@ public class MainView extends AbstractView implements IMainView {
 
     private void lock() {
         downloadBtn.setDisable(true);
+        parseBtn.setDisable(true);
     }
 
     private void unlock() {
-        Platform.runLater(() -> downloadBtn.setDisable(false));
+        downloadBtn.setDisable(false);
+        parseBtn.setDisable(false);
     }
 
     private void subscribeHandlers() {
-        Disposable disposable = mainViewModel.getStatus().subscribe(status -> {
-            statusTxt.setText(status);
-        });
+        Disposable disposable = mainViewModel.getStatus()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(status -> {
+                    statusTxt.setText(status);
+                });
         subscribers.add(disposable);
 
-        disposable = mainViewModel.getIsDownloading().subscribe(isDownloading -> {
-            if (isDownloading) {
-                lock();
-            } else {
-                unlock();
-            }
-        });
+        disposable = mainViewModel.getIsProcessing()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(isDownloading -> {
+                    if (isDownloading) {
+                        lock();
+                    } else {
+                        unlock();
+                    }
+                });
         subscribers.add(disposable);
 
-        disposable = mainViewModel.getLinks().subscribe(links -> {
-            links.forEach((link, tags) -> inList.getItems().add(new Link(link, String.join(" - ", tags))));
-        });
+        disposable = mainViewModel.getLinks()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(links -> {
+                    links.forEach((link, tags) -> inList.getItems()
+                            .add(new Link(link, String.join(" - ", tags))));
+                });
         subscribers.add(disposable);
     }
 

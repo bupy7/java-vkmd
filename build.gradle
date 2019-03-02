@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation 'io.reactivex.rxjava2:rxjavafx:2.2.2'
     
     annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
 

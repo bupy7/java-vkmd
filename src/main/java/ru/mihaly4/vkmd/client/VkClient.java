@@ -18,6 +18,7 @@ public class VkClient implements IVkClient {
 
     private int uid = 0;
     private OkHttpClient httpClient;
+    private final Map<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
 
     @Override
     public String fromAudio(int id, int offset) {
@@ -61,6 +62,9 @@ public class VkClient implements IVkClient {
 
     @Override
     public Boolean login(String username, String password) {
+        // reset last data
+        cookieStore.clear();
+
         // extract cookie and login url
         Request request = new Request.Builder()
                 .url(PING_URL)
@@ -120,8 +124,6 @@ public class VkClient implements IVkClient {
             httpClient = new OkHttpClient()
                     .newBuilder()
                     .cookieJar(new CookieJar() {
-                        private final Map<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
-
                         @Override
                         public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
                             cookieStore.put(url, cookies);

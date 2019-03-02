@@ -1,7 +1,7 @@
 package ru.mihaly4.vkmd.view;
 
 import io.reactivex.disposables.Disposable;
-import javafx.application.Platform;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginView extends AbstractView implements ILoginView {
+public class LoginView extends AbstractView {
     @Nonnull
     private LoginViewModel loginViewModel;
     @Nullable
@@ -41,11 +41,6 @@ public class LoginView extends AbstractView implements ILoginView {
         stage.initStyle(StageStyle.UTILITY);
 
         stage.setTitle("Login");
-    }
-
-    @Override
-    public void setStatus(String status) {
-        Platform.runLater(() -> statusTxt.setText(status));
     }
 
     @Override
@@ -99,21 +94,25 @@ public class LoginView extends AbstractView implements ILoginView {
     }
 
     private void unlock() {
-        Platform.runLater(() -> loginBtn.setDisable(false));
+        loginBtn.setDisable(false);
     }
 
     private void subscribeHandlers() {
-        Disposable disposable = loginViewModel.getStatus().subscribe(status -> {
-            statusTxt.setText(status);
-        });
+        Disposable disposable = loginViewModel.getStatus()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(status -> {
+                    statusTxt.setText(status);
+                });
         subscribers.add(disposable);
 
-        disposable = loginViewModel.getIsLogin().subscribe(isLogin -> {
-            unlock();
-            if (isLogin) {
-                Platform.runLater(stage::close);
-            }
-        });
+        disposable = loginViewModel.getIsLogin()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(isLogin -> {
+                    unlock();
+                    if (isLogin) {
+                        stage.close();
+                    }
+                });
         subscribers.add(disposable);
     }
 

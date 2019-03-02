@@ -29,7 +29,7 @@ public class MainViewModel {
     @Nonnull
     private PublishSubject<Map<String, String[]>> links = PublishSubject.create();
     @Nonnull
-    private PublishSubject<Boolean> isDownloading = PublishSubject.create();
+    private PublishSubject<Boolean> isProcessing = PublishSubject.create();
 
     public MainViewModel(@Nonnull IVkClient vkClient, @Nonnull VkRepository vkRepository, @Nonnull ILogger logger) {
         this.vkClient = vkClient;
@@ -44,6 +44,7 @@ public class MainViewModel {
 
     public void parseAudioLinks(@Nonnull String url) {
         new Thread(() -> {
+            isProcessing.onNext(true);
             status.onNext("Parsing...");
 
             Target target = TargetParser.parseTarget(url);
@@ -54,6 +55,7 @@ public class MainViewModel {
                     vkRepository.findAllByAudio(Integer.valueOf(target.getValue())).thenAccept(links -> {
                         status.onNext("");
                         this.links.onNext(links);
+                        isProcessing.onNext(false);
                     });
                 }
                 if (target.isWallType()) {
@@ -61,17 +63,19 @@ public class MainViewModel {
                     vkRepository.findAllByWall(target.getValue()).thenAccept(links -> {
                         status.onNext("");
                         this.links.onNext(links);
+                        isProcessing.onNext(false);
                     });
                 }
+            } else {
+                status.onNext("Invalid URL");
+                isProcessing.onNext(false);
             }
-
-            status.onNext("Invalid URL");
         }).start();
     }
 
     public void download(@Nonnull File directory, @Nonnull Link[] links) {
         new Thread(() -> {
-            isDownloading.onNext(true);
+            isProcessing.onNext(true);
 
             for (int i = 0; i != links.length; i++) {
                 status.onNext(String.format("Downloading %d/%d...", i, links.length));
@@ -92,7 +96,7 @@ public class MainViewModel {
             }
 
             status.onNext("Done!");
-            isDownloading.onNext(false);
+            isProcessing.onNext(false);
         }).start();
     }
 
@@ -107,7 +111,7 @@ public class MainViewModel {
     }
 
     @Nonnull
-    public PublishSubject<Boolean> getIsDownloading() {
-        return isDownloading;
+    public PublishSubject<Boolean> getIsProcessing() {
+        return isProcessing;
     }
 }

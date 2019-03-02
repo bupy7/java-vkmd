@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.mihaly4.vkmd.R;
 
-public class AboutView extends AbstractView implements IAboutView {
+public class AboutView extends AbstractView {
     public AboutView(Stage stage) {
         super(stage);
 
