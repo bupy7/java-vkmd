@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.view;
 
+import io.reactivex.disposables.Disposable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,18 +15,27 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import ru.mihaly4.vkmd.presenter.LoginPresenter;
+import ru.mihaly4.vkmd.viewmodel.LoginViewModel;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginView extends AbstractView implements ILoginView {
-    private LoginPresenter presenter;
+    @Nonnull
+    private LoginViewModel loginViewModel;
+    @Nullable
     private Button loginBtn;
+    @Nullable
     private Text statusTxt;
+    @Nonnull
+    private List<Disposable> subscribers = new ArrayList<>();
 
-    public LoginView(Stage stage, LoginPresenter presenter) {
+    public LoginView(@Nonnull Stage stage, @Nonnull LoginViewModel loginViewModel) {
         super(stage);
 
-        presenter.bindView(this);
-        this.presenter = presenter;
+        this.loginViewModel = loginViewModel;
 
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
@@ -57,12 +67,7 @@ public class LoginView extends AbstractView implements ILoginView {
         loginBtn = new Button("Login");
         loginBtn.setOnAction(value -> {
             lock();
-            presenter.login(phoneTxtField.getText(), passwordPassField.getText()).thenAccept(action -> {
-                unlock();
-                if (action) {
-                    Platform.runLater(stage::close);
-                }
-            });
+            loginViewModel.login(phoneTxtField.getText(), passwordPassField.getText());
         });
         hbox.getChildren().add(loginBtn);
 
@@ -79,11 +84,43 @@ public class LoginView extends AbstractView implements ILoginView {
         stage.setScene(new Scene(root, 200, 100));
     }
 
+    @Override
+    protected void onHidden() {
+        unsubscribeHandlers();
+    }
+
+    @Override
+    protected void onShown(Parent root) {
+        subscribeHandlers();
+    }
+
     private void lock() {
         loginBtn.setDisable(true);
     }
 
     private void unlock() {
         Platform.runLater(() -> loginBtn.setDisable(false));
+    }
+
+    private void subscribeHandlers() {
+        Disposable disposable = loginViewModel.getStatus().subscribe(status -> {
+            statusTxt.setText(status);
+        });
+        subscribers.add(disposable);
+
+        disposable = loginViewModel.getIsLogin().subscribe(isLogin -> {
+            unlock();
+            if (isLogin) {
+                Platform.runLater(stage::close);
+            }
+        });
+        subscribers.add(disposable);
+    }
+
+    private void unsubscribeHandlers() {
+        for (int i = 0; i != subscribers.size(); i++) {
+            subscribers.get(i).dispose();
+        }
+        subscribers.clear();
     }
 }

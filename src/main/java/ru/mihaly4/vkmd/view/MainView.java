@@ -1,5 +1,6 @@
 package ru.mihaly4.vkmd.view;
 
+import io.reactivex.disposables.Disposable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,30 +20,48 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.SystemUtils;
 import ru.mihaly4.vkmd.R;
 import ru.mihaly4.vkmd.model.Link;
-import ru.mihaly4.vkmd.presenter.MainPresenter;
+import ru.mihaly4.vkmd.viewmodel.MainViewModel;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainView extends AbstractView implements IMainView {
-    private MainPresenter presenter;
+    @Nonnull
+    private MainViewModel mainViewModel;
+    @Nonnull
     private LoginView loginView;
+    @Nonnull
     private AboutView aboutView;
+    @Nullable
     private TextField urlTxtField;
+    @Nullable
     private ListView<Link> inList;
+    @Nullable
     private ListView<Link> outList;
+    @Nullable
     private Text statusTxt;
+    @Nullable
     private Button downloadBtn;
+    @Nonnull
+    private List<Disposable> subscribers = new ArrayList<>();
 
     private static final int DOUBLE_CLICK = 2;
 
-    public MainView(Stage stage, MainPresenter presenter, LoginView loginView, AboutView aboutView) {
+    public MainView(
+            @Nonnull Stage stage,
+            @Nonnull MainViewModel mainViewModel,
+            @Nonnull LoginView loginView,
+            @Nonnull AboutView aboutView
+    ) {
         super(stage);
 
         this.loginView = loginView;
         this.aboutView = aboutView;
 
-        presenter.bindView(this);
-        this.presenter = presenter;
+        this.mainViewModel = mainViewModel;
 
         stage.setTitle(R.APP_TITLE);
         stage.getIcons().add(new Image(getClass().getResourceAsStream(R.APP_ICON)));
@@ -71,8 +90,14 @@ public class MainView extends AbstractView implements IMainView {
     }
 
     @Override
-    protected void onResume(Parent root) {
+    protected void onShown(Parent root) {
         root.requestFocus();
+        subscribeHandlers();
+    }
+
+    @Override
+    protected void onHidden() {
+        unsubscribeHandlers();
     }
 
     private Node renderInput() {
@@ -88,16 +113,10 @@ public class MainView extends AbstractView implements IMainView {
 
         Button parseBtn = new Button("Parse");
         parseBtn.setOnAction(event -> {
-            if (!presenter.isLogged()) {
-                loginView.show(true); // @TODO: Replace to Event Bus
-            }
-            // @TODO: Replace to Event Bus
-            if (presenter.isLogged()) {
-                presenter.parseAudioLinks(urlTxtField.getText())
-                        .thenAccept(links
-                                -> links.forEach((link, tags)
-                                        -> inList.getItems().add(new Link(link, String.join(" - ", tags))))
-                        );
+            if (!mainViewModel.isLogged()) {
+                loginView.show();
+            } else {
+                mainViewModel.parseAudioLinks(urlTxtField.getText());
             }
         });
         hbox.getChildren().add(parseBtn);
@@ -110,15 +129,12 @@ public class MainView extends AbstractView implements IMainView {
             File selectedDirectory = chooser.showDialog(stage);
 
             if (selectedDirectory != null && selectedDirectory.canWrite()) {
-                lock();
-                presenter.download(selectedDirectory, outList.getItems().toArray(new Link[0])).thenAccept(result -> {
-                    unlock();
-                });
+                mainViewModel.download(selectedDirectory, outList.getItems().toArray(new Link[0]));
             }
         });
         hbox.getChildren().add(downloadBtn);
 
-        // @TODO
+        // @TODO: ??? I forgot why TODO...
         if (!SystemUtils.IS_OS_MAC) {
             Button aboutBtn = new Button("?");
             aboutBtn.setOnAction(event -> {
@@ -197,5 +213,33 @@ public class MainView extends AbstractView implements IMainView {
 
     private void unlock() {
         Platform.runLater(() -> downloadBtn.setDisable(false));
+    }
+
+    private void subscribeHandlers() {
+        Disposable disposable = mainViewModel.getStatus().subscribe(status -> {
+            statusTxt.setText(status);
+        });
+        subscribers.add(disposable);
+
+        disposable = mainViewModel.getIsDownloading().subscribe(isDownloading -> {
+            if (isDownloading) {
+                lock();
+            } else {
+                unlock();
+            }
+        });
+        subscribers.add(disposable);
+
+        disposable = mainViewModel.getLinks().subscribe(links -> {
+            links.forEach((link, tags) -> inList.getItems().add(new Link(link, String.join(" - ", tags))));
+        });
+        subscribers.add(disposable);
+    }
+
+    private void unsubscribeHandlers() {
+        for (int i = 0; i != subscribers.size(); i++) {
+            subscribers.get(i).dispose();
+        }
+        subscribers.clear();
     }
 }

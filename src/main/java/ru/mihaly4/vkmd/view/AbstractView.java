@@ -16,26 +16,17 @@ public abstract class AbstractView implements IView {
     AbstractView(Stage stage) {
         this.stage = stage;
 
-        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, (event) -> onStop());
-    }
-
-    @Override
-    public void show(boolean wait) {
-        create();
-        start();
-
-        if (wait) {
-            stage.showAndWait();
-        } else {
-            stage.show();
-        }
-
-        resume();
+        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, (event) -> onHidden());
     }
 
     @Override
     public void show() {
-        show(false);
+        create();
+        start();
+
+        stage.show();
+
+        shown();
     }
 
     @Override
@@ -59,14 +50,14 @@ public abstract class AbstractView implements IView {
     /**
      * Here you can set focus on any element or something else.
      */
-    protected void onResume(Parent root) {
+    protected void onShown(Parent root) {
         // nothing
     }
 
     /**
      * Closing window.
      */
-    protected void onStop() {
+    protected void onHidden() {
         // nothing
     }
 
@@ -88,7 +79,7 @@ public abstract class AbstractView implements IView {
         }
     }
 
-    private void resume() {
-        onResume(root);
+    private void shown() {
+        onShown(root);
     }
 }

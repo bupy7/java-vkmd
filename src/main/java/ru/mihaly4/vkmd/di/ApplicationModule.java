@@ -1,18 +1,18 @@
 package ru.mihaly4.vkmd.di;
 
+import dagger.Module;
+import dagger.Provides;
+import javafx.stage.Stage;
 import ru.mihaly4.vkmd.client.VkClient;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.MemoryLogger;
 import ru.mihaly4.vkmd.menu.MainMenu;
-import ru.mihaly4.vkmd.presenter.LoginPresenter;
-import ru.mihaly4.vkmd.presenter.MainPresenter;
 import ru.mihaly4.vkmd.repository.VkRepository;
 import ru.mihaly4.vkmd.view.AboutView;
 import ru.mihaly4.vkmd.view.LoginView;
 import ru.mihaly4.vkmd.view.MainView;
-import dagger.Module;
-import dagger.Provides;
-import javafx.stage.Stage;
+import ru.mihaly4.vkmd.viewmodel.LoginViewModel;
+import ru.mihaly4.vkmd.viewmodel.MainViewModel;
 
 import javax.inject.Singleton;
 
@@ -26,8 +26,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public MainView provideMainView(MainPresenter mainPresenter, LoginView loginView, AboutView aboutView) {
-        return new MainView(primaryStage, mainPresenter, loginView, aboutView);
+    public MainView provideMainView(MainViewModel mainViewModel, LoginView loginView, AboutView aboutView) {
+        return new MainView(primaryStage, mainViewModel, loginView, aboutView);
     }
 
     @Provides
@@ -74,20 +74,20 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public LoginView provideLoginView(LoginPresenter loginPresenter) {
+    public LoginView provideLoginView(LoginViewModel loginViewModel) {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
 
-        return new LoginView(stage, loginPresenter);
+        return new LoginView(stage, loginViewModel);
     }
 
     @Provides
-    public MainPresenter provideMainPresenter(VkClient vkClient, VkRepository vkRepository, MemoryLogger logger) {
-        return new MainPresenter(vkClient, vkRepository, logger);
+    public MainViewModel provideMainViewModel(VkClient vkClient, VkRepository vkRepository, MemoryLogger logger) {
+        return new MainViewModel(vkClient, vkRepository, logger);
     }
 
     @Provides
-    public LoginPresenter provideLoginPresenter(VkClient vkClient) {
-        return new LoginPresenter(vkClient);
+    public LoginViewModel provideLoginViewModel(VkClient vkClient) {
+        return new LoginViewModel(vkClient);
     }
 }
