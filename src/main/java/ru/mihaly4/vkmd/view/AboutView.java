@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.mihaly4.vkmd.R;
 
+import javax.annotation.Nonnull;
+
 public class AboutView extends AbstractView {
     public AboutView(Stage stage) {
         super(stage);
@@ -26,6 +28,7 @@ public class AboutView extends AbstractView {
     }
 
     @Override
+    @Nonnull
     protected Parent onCreate() {
         VBox vbox = new VBox(2);
         vbox.setPadding(new Insets(5));
@@ -48,7 +51,8 @@ public class AboutView extends AbstractView {
     }
 
     @Override
-    protected void onStart(Parent root) {
-        stage.setScene(new Scene(root, 200, 155));
+    @Nonnull
+    protected Scene onStart(@Nonnull Parent root) {
+        return new Scene(root, 200, 155);
     }
 }

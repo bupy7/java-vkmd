@@ -6,21 +6,26 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractView implements IView {
+    @Nonnull
     protected Stage stage;
     @Nullable
-    private Scene scene;
     private Parent root;
-    private boolean created = false;
+    @Nonnull
     private List<IHiddenObserver> hiddenObservers = new ArrayList<>();
 
-    AbstractView(Stage stage) {
+    AbstractView(@Nonnull Stage stage) {
         this.stage = stage;
 
-        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, (event) -> onHidden());
+        this.stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, (event) -> {
+            event.consume();
+
+            hide();
+        });
     }
 
     @Override
@@ -36,14 +41,18 @@ public abstract class AbstractView implements IView {
     @Override
     public void hide() {
         stage.hide();
+
+        stage.setScene(null);
+        root = null;
+
         onHidden();
     }
 
-    public void subscribeOnHidden(IHiddenObserver observer) {
+    public void subscribeOnHidden(@Nonnull IHiddenObserver observer) {
         hiddenObservers.add(observer);
     }
 
-    public void unsubscribeOnHidden(IHiddenObserver observer) {
+    public void unsubscribeOnHidden(@Nonnull IHiddenObserver observer) {
         hiddenObservers.remove(observer);
     }
 
@@ -51,15 +60,14 @@ public abstract class AbstractView implements IView {
      * Create own elements right here.
      * @return Parent
      */
+    @Nonnull
     protected abstract Parent onCreate();
 
     /**
      * Initiate scene.
      */
-    protected void onStart(Parent root) {
-        // nothing
-    }
-
+    @Nonnull
+    protected abstract Scene onStart(@Nonnull Parent root);
     /**
      * Here you can set focus on any element or something else.
      */
@@ -75,21 +83,12 @@ public abstract class AbstractView implements IView {
     }
 
     private void create() {
-        if (!created) {
-            root = onCreate();
-
-            created = true;
-        }
+        root = onCreate();
     }
 
     private void start() {
-        if (scene == null) {
-            onStart(root);
-
-            scene = root.getScene();
-        } else {
-            stage.setScene(scene);
-        }
+        stage.setScene(onStart(root));
+        stage.sizeToScene();
     }
 
     private void shown() {
@@ -97,7 +96,7 @@ public abstract class AbstractView implements IView {
     }
 
     private void notifyHiddenObservers() {
-        hiddenObservers.forEach(observer -> observer.run());
+        hiddenObservers.forEach(IHiddenObserver::run);
     }
 
     interface IHiddenObserver {

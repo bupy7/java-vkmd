@@ -77,6 +77,7 @@ public class MainView extends AbstractView {
     }
 
     @Override
+    @Nonnull
     protected Parent onCreate() {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
@@ -87,10 +88,9 @@ public class MainView extends AbstractView {
     }
 
     @Override
-    protected void onStart(Parent root) {
-        Scene scene = new Scene(root, 485, 400);
-
-        stage.setScene(scene);
+    @Nonnull
+    protected Scene onStart(@Nonnull Parent root) {
+        return new Scene(root, 485, 400);
     }
 
     @Override

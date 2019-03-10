@@ -3,12 +3,13 @@ package ru.mihaly4.vkmd.parser;
 import org.jetbrains.annotations.Nullable;
 import ru.mihaly4.vkmd.model.Target;
 
+import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TargetParser {
     @Nullable
-    public static Target parseTarget(String url) {
+    public static Target parseTarget(@Nonnull String url) {
         Pattern p = Pattern.compile("com/audios((-|)[\\d]+)");
         Matcher matches = p.matcher(url);
         if (matches.find()) {

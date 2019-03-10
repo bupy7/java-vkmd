@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -29,6 +31,8 @@ public class LoginView extends AbstractView {
     @Nullable
     private Text statusTxt;
     @Nullable
+    private VBox captchaBox;
+    @Nullable
     private CompositeDisposable compositeDisposable;
 
     public LoginView(@Nonnull Stage stage, @Nonnull LoginViewModel loginViewModel) {
@@ -43,36 +47,46 @@ public class LoginView extends AbstractView {
     }
 
     @Override
+    @Nonnull
     protected Parent onCreate() {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(5));
 
-        TextField phoneTxtField = new TextField();
+        TextField phoneTxtField = new TextField(loginViewModel.getUsername().getValue());
         phoneTxtField.setPromptText("Phone number");
+        phoneTxtField.textProperty().addListener((observable, oldValue, newValue)
+                -> loginViewModel.getUsername().onNext(newValue));
         vbox.getChildren().add(phoneTxtField);
 
         TextField passwordPassField = new PasswordField();
         passwordPassField.setPromptText("Password");
+        passwordPassField.textProperty().addListener((observable, oldValue, newValue)
+                -> loginViewModel.getPassword().onNext(newValue));
         vbox.getChildren().add(passwordPassField);
 
-        HBox hbox = new HBox(5);
-        hbox.setAlignment(Pos.BASELINE_LEFT);
+        // captcha
+        captchaBox = new VBox(5);
+        captchaBox.setManaged(false);
+        captchaBox.setVisible(false);
+        vbox.getChildren().add(captchaBox);
 
+        // login box
+        HBox loginBox = new HBox(5);
+        loginBox.setAlignment(Pos.BASELINE_LEFT);
         loginBtn = new Button("Login");
-        loginBtn.setOnAction(value -> loginViewModel.login(phoneTxtField.getText(), passwordPassField.getText()));
-        hbox.getChildren().add(loginBtn);
-
+        loginBtn.setOnAction(value -> loginViewModel.login());
+        loginBox.getChildren().add(loginBtn);
         statusTxt = new Text();
-        hbox.getChildren().add(statusTxt);
-
-        vbox.getChildren().add(hbox);
+        loginBox.getChildren().add(statusTxt);
+        vbox.getChildren().add(loginBox);
 
         return vbox;
     }
 
     @Override
-    protected void onStart(Parent root) {
-        stage.setScene(new Scene(root, 200, 100));
+    @Nonnull
+    protected Scene onStart(@Nonnull Parent root) {
+        return new Scene(root, 200, 100);
     }
 
     @Override
@@ -121,6 +135,17 @@ public class LoginView extends AbstractView {
                     }
                 });
         compositeDisposable.add(disposable);
+
+        disposable = loginViewModel.getCaptchaUrl()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribe(captcha -> {
+                    if (captcha.isEmpty()) {
+                        hideCaptcha();
+                    } else {
+                        showCaptcha(captcha);
+                    }
+                });
+        compositeDisposable.add(disposable);
     }
 
     private void unsubscribeHandlers() {
@@ -128,5 +153,31 @@ public class LoginView extends AbstractView {
             compositeDisposable.dispose();
             compositeDisposable = null;
         }
+    }
+
+    private void showCaptcha(String captchaUrl) {
+        captchaBox.getChildren().clear();
+
+        TextField captchaTxtField = new TextField();
+        captchaTxtField.setPromptText("Captcha");
+        captchaTxtField.textProperty().addListener((observable, oldValue, newValue)
+                -> loginViewModel.getCaptchaCode().onNext(newValue));
+        captchaBox.getChildren().add(captchaTxtField);
+        ImageView captchaImg = new ImageView(new Image(captchaUrl));
+        captchaBox.getChildren().add(captchaImg);
+
+        captchaBox.setManaged(true);
+        captchaBox.setVisible(true);
+
+        stage.setHeight(205);
+    }
+
+    private void hideCaptcha() {
+        captchaBox.setManaged(false);
+        captchaBox.setVisible(false);
+
+        captchaBox.getChildren().clear();
+
+        stage.setHeight(115);
     }
 }

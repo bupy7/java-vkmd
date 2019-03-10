@@ -6,7 +6,9 @@ import org.junit.Test;
 import ru.mihaly4.vkmd.client.IVkClient;
 import ru.mihaly4.vkmd.decoder.VkMusicLinkDecoder;
 import ru.mihaly4.vkmd.log.ILogger;
+import ru.mihaly4.vkmd.model.LoginResponse;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -56,6 +58,7 @@ public class VkRepositoryTest {
 
     private static class VkClient implements IVkClient {
         @Override
+        @Nonnull
         public String fromAudio(int id, int offset) {
             if (offset != 0) {
                 return "";
@@ -71,6 +74,7 @@ public class VkRepositoryTest {
         }
 
         @Override
+        @Nonnull
         public String fromWall(String id, int offset) {
             if (offset != 0) {
                 return "";
@@ -86,8 +90,9 @@ public class VkRepositoryTest {
         }
 
         @Override
-        public Boolean login(String username, String password) {
-            return true;
+        @Nonnull
+        public LoginResponse login(@Nonnull String username, @Nonnull String password, @Nonnull String captchaCode) {
+            return new LoginResponse(true);
         }
 
         @Override
