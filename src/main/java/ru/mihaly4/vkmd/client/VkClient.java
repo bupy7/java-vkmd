@@ -90,7 +90,7 @@ public class VkClient implements IVkClient {
 
         // login
         FormBody.Builder requestBodyBuilder = new FormBody.Builder()
-                .add("email", username)
+                .add("email", prepUsername(username))
                 .add("pass", password);
         if (!captchaCode.isEmpty()) {
             requestBodyBuilder.add("captcha_key", captchaCode);
@@ -197,5 +197,13 @@ public class VkClient implements IVkClient {
                 })
                 .collect(Collectors.toList());
         return String.join("; ", cookies);
+    }
+
+    @Nonnull
+    private String prepUsername(@Nonnull String username) {
+        if (username.contains("@")) {
+            return username;
+        }
+        return username.replaceAll("[^\\d]+", "");
     }
 }

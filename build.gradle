@@ -17,7 +17,7 @@ apply plugin: 'idea'
 
 // package config params
 group = 'ru.mihaly4'
-version = '1.0.2'
+version = '1.0.3'
 
 // In this section you declare where to find the dependencies of your project
 repositories {

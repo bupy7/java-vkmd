@@ -1,11 +1,10 @@
 java-vkmd
 =========
 
-1.0.3 [2019-XX-XX]
+1.0.3 [2019-03-31]
 ------------------
 
 - Enh: MVP replaced to MVVM.
-TODO:
 - Fix: Login bug #2.
 - Add: Ability to enter a captcha code.
 - Add: Ability to login with Email.

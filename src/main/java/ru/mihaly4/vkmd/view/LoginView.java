@@ -53,7 +53,7 @@ public class LoginView extends AbstractView {
         vbox.setPadding(new Insets(5));
 
         TextField phoneTxtField = new TextField(loginViewModel.getUsername().getValue());
-        phoneTxtField.setPromptText("Phone number");
+        phoneTxtField.setPromptText("Phone/Email");
         phoneTxtField.textProperty().addListener((observable, oldValue, newValue)
                 -> loginViewModel.getUsername().onNext(newValue));
         vbox.getChildren().add(phoneTxtField);

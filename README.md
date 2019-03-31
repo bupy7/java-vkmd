@@ -19,6 +19,8 @@ Run
 $ ./vkmd
 ```
 
+or [download](https://github.com/bupy7/java-vkmd/releases) latest package for your OS (Windows or macOS).
+
 Developing
 ----------
 

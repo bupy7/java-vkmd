@@ -34,7 +34,11 @@ public class LoginViewModel {
             status.onNext("Wait...");
             isProcessing.onNext(true);
 
-            LoginResponse result = vkClient.login(username.getValue(), password.getValue(), captchaCode.getValue());
+            LoginResponse result = vkClient.login(
+                    username.getValue(),
+                    password.getValue(),
+                    captchaCode.getValue()
+            );
 
             if (result.isLoggedIn()) {
                 status.onNext("");
@@ -44,7 +48,10 @@ public class LoginViewModel {
                 status.onNext("Invalid credentials");
                 isLogin.onNext(false);
                 isProcessing.onNext(false);
-                this.captchaUrl.onNext(result.getCaptcha());
+                captchaUrl.onNext(result.getCaptcha());
+                if (result.getCaptcha().isEmpty()) {
+                    captchaCode.onNext("");
+                }
             }
         }).start();
     }
