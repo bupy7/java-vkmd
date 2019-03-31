@@ -96,8 +96,7 @@ task deploy(type: Exec, dependsOn: [assemble]) {
         dependencies.add('-srcfiles')
         dependencies.add(file.getName())
     })
-
-    workingDir project.projectDir
+    
     def primaryArgs = [
             'javapackager',
             '-deploy',
