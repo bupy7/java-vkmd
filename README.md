@@ -5,6 +5,8 @@ java-vkmd
 
 A lighten music downloader for Vkontakte.
 
+> **It's not supporting 2-factor authentication!**
+
 ![java-vkmd](screenshot.gif)
 
 Requirements
