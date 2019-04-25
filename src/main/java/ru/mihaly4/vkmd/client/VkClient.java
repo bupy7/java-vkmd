@@ -19,6 +19,8 @@ public class VkClient implements IVkClient {
     private static final String BASE_CAPTCHA_URL = "https://m.vk.com/";
     private static final String PING_URL = "https://m.vk.com/";
     private static final String COOKIE_REMIX_M_DEVICE = "375/667/1/!!-!!!!";
+    private static final String USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) "
+            + "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1";
 
     private int uid = 0;
     private OkHttpClient httpClient;
@@ -143,6 +145,13 @@ public class VkClient implements IVkClient {
         if (httpClient == null) {
             httpClient = new OkHttpClient()
                     .newBuilder()
+                    .addNetworkInterceptor(chain -> {
+                        Request originalRequest = chain.request();
+                        Request requestWithUserAgent = originalRequest.newBuilder()
+                                .header("User-Agent", USER_AGENT)
+                                .build();
+                        return chain.proceed(requestWithUserAgent);
+                    })
                     .cookieJar(new CookieJar() {
                         @Override
                         public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
