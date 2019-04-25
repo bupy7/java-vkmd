@@ -3,11 +3,11 @@ java-vkmd
 
 [![Build Status](https://travis-ci.org/bupy7/java-vkmd.svg?branch=master)](https://travis-ci.org/bupy7/java-vkmd)
 
+### Notice! It's not supporting 2-factor authentication!
+
 A lighten music downloader for Vkontakte.
 
 ![java-vkmd](screenshot.gif)
-
-### Notice! It's not supporting 2-factor authentication!
 
 Requirements
 ------------
