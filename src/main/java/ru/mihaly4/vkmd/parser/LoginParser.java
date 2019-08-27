@@ -15,7 +15,7 @@ public class LoginParser {
     }
 
     public static int parseUid(@Nonnull String data) {
-        Pattern p = Pattern.compile("class=\"ip_user_link[\\s\\S]+href=\"/id([\\d]+)");
+        Pattern p = Pattern.compile("class=\"ip_user_link[\\s\\S]+?href=\"/id([\\d]+)");
 
         Matcher matches = p.matcher(data);
 

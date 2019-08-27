@@ -17,7 +17,7 @@ apply plugin: 'idea'
 
 // package config params
 group = 'ru.mihaly4'
-version = '1.0.4'
+version = '1.1.0'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -78,6 +78,7 @@ task deploy(type: Exec, dependsOn: [assemble]) {
     def nativeType = ''
     def icon = ''
 
+    // deprecated 2.0.0
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         nativeType = 'exe'
         icon = 'windows/app.ico'
@@ -86,6 +87,7 @@ task deploy(type: Exec, dependsOn: [assemble]) {
         nativeType = 'dmg'
         icon = 'mac/app.icns'
     }
+    // deprecated 2.0.0
     if (System.properties['os.name'].toLowerCase().contains('linux')) {
         nativeType = 'deb'
         icon = 'linux/app.png'

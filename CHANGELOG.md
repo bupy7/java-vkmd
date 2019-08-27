@@ -1,6 +1,12 @@
 java-vkmd
 =========
 
+1.1.0 [2019-08-27]
+------------------
+
+- Fix: Decode links bug.
+- Dep: Support of OS Windows and Linux.
+
 1.0.4 [2019-04-26]
 ------------------
 

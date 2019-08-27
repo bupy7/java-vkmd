@@ -18,6 +18,7 @@ public class MainMenu implements IMenu {
 
     @Override
     public void render() {
+        // deprecated 2.0.0
         if (!SystemUtils.IS_OS_MAC) {
             return;
         }

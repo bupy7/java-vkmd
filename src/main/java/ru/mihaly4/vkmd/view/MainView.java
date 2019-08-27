@@ -139,7 +139,7 @@ public class MainView extends AbstractView {
         });
         hbox.getChildren().add(downloadBtn);
 
-        // @TODO: ??? I forgot why TODO...
+        // deprecated 2.0.0
         if (!SystemUtils.IS_OS_MAC) {
             Button aboutBtn = new Button("?");
             aboutBtn.setOnAction(event -> {

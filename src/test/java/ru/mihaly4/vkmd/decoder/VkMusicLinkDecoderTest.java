@@ -9,6 +9,27 @@ import static org.junit.Assert.*;
 
 public class VkMusicLinkDecoderTest {
     @Test
+    public void decode() {
+        String link = "https://m.vk.com/mp3/audio_api_unavailable.mp3?extra=Afjjz1LKsg9lmZjwoxvZyZbKBxHOq1u/uwvuyKrXEuv"
+            + "Hztu5DJvwouzFCej2C1nLD29mCMKOt3qOwveUzc5oBgf5A3D4ndqZqOLrlJLUmZq3tI11sgK3AgrHEdLdt2vNnNnJt21dAOrKDvr1BJy"
+            + "Tlw0XDc10rvL3Bt1PstzOywTWnc9TDgmZqNu5tOCOmMDotIOZCheTn1j5u1H2nhiVCsOOmI9loJCVrf8VnvmYmxmYD3Hhrw8Xn1eYnhn"
+            + "PqZiOv2fSswfSndbWEvzfDgnzn2rvmMnYneLOBZi5x1K3u1D4swTWos9yvq#AqS4mdC";
+        String expected = "https://psv4.vkuseraudio.net/c422724/u40724969/audios/4a24493736c9.mp3?extra=EiC9YYm5Ch4cq4S"
+            + "35XaaK7QG9t-mLgIH-CtwcsWvQy9BFDlkDX4hxS_llVdOxExg77IUpD2q_U1-5w2EwWNTYHp_Q1Uiru0V2n-q1yEK439oId-cI-TVkGj"
+            + "BONY4by-SgtmORIwdQkYy6ONSeo2R7xCdCNI";
+        assertEquals(expected, new VkMusicLinkDecoder().decode(link, 520969309));
+
+        link = "https://m.vk.com/mp3/audio_api_unavailable.mp3?extra=Af93q2zittm4DgLOBhzQq3nWmhzHCOW6C3HWEgLJvKfNn3uTCZ"
+            + "1TngXbzveYEMjJCJbvne15DdHwCZbuDLjLvtfOrJuVmLPjugT4Au1vzxaXnuPNmK9wtZHJzdrwlNf0AtzIqunbx21rrg1vEJDwzLfwBg"
+            + "i3qtvHyt9NogSZAJv5mtDQm3jVDZbLwveVowmWvI9yz29Jys1Zm2TMzZnuy3fbzdrLnLHnD3yOCe5LzhbHCs90Dhy4Dw0TCJjLz3LrsO"
+            + "DwzvbpBM9HvwqUBOfyBZbpvdL1lKv2nvy#AqS5nJG";
+        expected = "https://cs1-80v4.vkuseraudio.net/p19/b077572e87826e.mp3?extra=oOjMUV0Q8mlfV8vp2csQ_iyjjVzlvPwXE4Agi"
+            + "acVjC5LTlo4-d5oNQkku4PTUA5arxd3gUzCw4qAADcvOx0XH_e93bf1t-vfgAGYA3s0hUgUcsqo2KaOFehCbVypQVdMwZOgVTqRM6mIg"
+            + "M5Jy3XVVQ0aeiAc";
+        assertEquals(expected, new VkMusicLinkDecoder().decode(link, 520969309));
+    }
+
+    @Test
     public void decodeIAndSMode() {
         String link = "https://m.vk.com/mp3/audio_api_unavailable.mp3?extra=AdzfDufpDwCTmvjLowf2oxPZmMnJqxu6l1jLB3qOBJL"
             + "JvwmZzdmVnMO4meTZmen5ntGOEgC5mvnwwM9imdiOuLDmngLkuvPTDf90sMfYvePXAOzAx1rLp2DUyxzQCZGUohLOus9Ux2XSrMzooc5"
