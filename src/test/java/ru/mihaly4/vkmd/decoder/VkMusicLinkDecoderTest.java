@@ -77,4 +77,23 @@ public class VkMusicLinkDecoderTest {
                 method.invoke(vkMusicLinkDecoder, "https://pastebin.com/", "22")
         );
     }
+
+    @Test
+    public void decodeM3u8() {
+        String link = "https://psv4.vkuseraudio.net/c536202/u241560289/0e4ecc1ac07/audios/1d0345f16255/index.m3u8?extra"
+                + "=_jn8pef9cWDri692L_pc_iTskAb9Vr2jyqWgngS0Ki1CzvpDsjdDGeUTj1LKZRgwMiRJ2tAovNk8PBCyFddsjGwAEqUEgfW96Yv"
+                + "1VJ28lkFxmbyBX07-BxW8YEAc7VcxH8Ggh0jIdhpX1pUP6_EPGNzaKx4&long_chunk=1";
+        String expected = "https://psv4.vkuseraudio.net/c536202/u241560289/audios/1d0345f16255.mp3?extra=_jn8pef9cWDri6"
+                + "92L_pc_iTskAb9Vr2jyqWgngS0Ki1CzvpDsjdDGeUTj1LKZRgwMiRJ2tAovNk8PBCyFddsjGwAEqUEgfW96Yv1VJ28lkFxmbyBX0"
+                + "7-BxW8YEAc7VcxH8Ggh0jIdhpX1pUP6_EPGNzaKx4&long_chunk=1";
+        assertEquals(expected, new VkMusicLinkDecoder().decode(link, 520969309));
+
+        link = "https://cs1-50v4.vkuseraudio.net/p2/0ef37dba2ac/f6650711706863/index.m3u8?extra=-yz4ws8JRuzueLa2CgjE4nC"
+                + "MDDAMokzMjF079hcb_GyKMiIbX8IYewXFcA1XY7tdCe0mMcoUp0z5N43PKqSYTIzxXr3G_GwDyfticnpkMjzdUcGpa5Yb7PV8VcP3Enl"
+                + "6BU7_qKWow-1Gr-b61FmhY_bEpvw&long_chunk=1";
+        expected = "https://cs1-50v4.vkuseraudio.net/p2/f6650711706863.mp3?extra=-yz4ws8JRuzueLa2CgjE4nCMDDAMokzMjF079h"
+                + "cb_GyKMiIbX8IYewXFcA1XY7tdCe0mMcoUp0z5N43PKqSYTIzxXr3G_GwDyfticnpkMjzdUcGpa5Yb7PV8VcP3Enl6BU7_qKWow-"
+                + "1Gr-b61FmhY_bEpvw&long_chunk=1";
+        assertEquals(expected, new VkMusicLinkDecoder().decode(link, 520969309));
+    }
 }

@@ -1,9 +1,9 @@
 package ru.mihaly4.vkmd.parser;
 
-import org.jetbrains.annotations.Nullable;
 import ru.mihaly4.vkmd.model.Target;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

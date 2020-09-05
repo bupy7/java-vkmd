@@ -10,15 +10,35 @@ import java.util.Collections;
 
 /**
  * Rewritten to Java from https://github.com/yuru-yuri/vk-audio-url-decoder-php/commit/7b4178cf6b314c09f9acb8b19619edb1439e9af8
+ * and from https://github.com/python273/vk_api/tree/85e8f5c199178093690374ab47d373de6b88fb3e
  */
 public class VkMusicLinkDecoder {
     private static final String DICT = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/=";
 
     public String decode(String link, int uid) {
-        if (!link.contains("audio_api_unavailable")) {
-            return link;
+        if (link.contains("audio_api_unavailable")) {
+            return decodeV1(link, uid);
         }
 
+        if (link.contains("index.m3u8")) {
+            return decodeV2(link);
+        }
+
+        return link;
+    }
+
+    /**
+     * @since 1.1.1
+     */
+    private String decodeV2(String link)
+    {
+        return link.replaceFirst("/[\\w]+(/audios)?/([\\w]+)/index.m3u8", "$1/$2.mp3");
+    }
+
+    /**
+     * @since 1.1.1
+     */
+    private String decodeV1(String link, int uid) {
         String[] t = link.split("\\?extra=")[1].split("#");
         String tt = decodeR(t[0]);
 
