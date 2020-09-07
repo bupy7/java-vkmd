@@ -17,7 +17,7 @@ apply plugin: 'idea'
 
 // package config params
 group = 'ru.mihaly4'
-version = '1.1.0'
+version = '1.1.1'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -31,7 +31,6 @@ dependencies {
     // compile fileTree(dir: 'libs', include: '*.jar')
 
     implementation 'com.google.guava:guava:24.1-jre'
-    implementation 'com.intellij:annotations:+@jar'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.google.dagger:dagger:2.17'
     implementation 'de.codecentric.centerdevice:centerdevice-nsmenufx:2.1.6'
@@ -39,6 +38,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
     implementation 'io.reactivex.rxjava2:rxjavafx:2.2.2'
+    implementation 'org.json:json:20200518'
     
     annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
 

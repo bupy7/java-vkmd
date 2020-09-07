@@ -12,4 +12,6 @@ public interface IVkClient {
     @Nonnull
     LoginResponse login(@Nonnull String username, @Nonnull String password, @Nonnull String captchaCode);
     int getUid();
+    @Nonnull
+    public String reloadAudio(@Nonnull String[] audioIds);
 }

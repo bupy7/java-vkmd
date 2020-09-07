@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class VkClient implements IVkClient {
     private static final String BASE_AUDIO_URL = "https://m.vk.com/audios";
+    private static final String BASE_RELOAD_AUDIO_URL = "https://m.vk.com/audio";
     private static final String BASE_WALL_URL = "https://m.vk.com/";
     private static final String BASE_CAPTCHA_URL = "https://m.vk.com/";
     private static final String PING_URL = "https://m.vk.com/";
@@ -25,6 +26,42 @@ public class VkClient implements IVkClient {
     private int uid = 0;
     private OkHttpClient httpClient;
     private final Map<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
+
+    /**
+     * @param audioIds Maximum size of items is 3.
+     * @return JSON
+     */
+    @Override
+    @Nonnull
+    public String reloadAudio(@Nonnull String[] audioIds) {
+        FormBody.Builder requestBodyBuilder = new FormBody.Builder()
+                .add("act", "reload_audio")
+                .add("ids", String.join(",", audioIds));
+
+        String json = "";
+
+        Request request;
+        try {
+            request = new Request.Builder()
+                    .url(BASE_RELOAD_AUDIO_URL)
+                    .post(requestBodyBuilder.build())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return json;
+        }
+
+        Response response;
+        try {
+            response = getHttpClient().newCall(request).execute();
+            if (response.isSuccessful()) {
+                json = response.body().string();
+            }
+        } catch (IOException | NullPointerException e) {
+            // nothing
+        }
+
+        return json;
+    }
 
     @Override
     @Nonnull
