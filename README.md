@@ -7,7 +7,7 @@ java-vkmd
 
 ### Only for macOS.
 
-## Windows and Linux are unsupported.
+### Windows and Linux are unsupported.
 
 A lighten music downloader for Vkontakte.
 
