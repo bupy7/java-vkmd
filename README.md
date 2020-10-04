@@ -5,6 +5,10 @@ java-vkmd
 
 ### Notice! It's not supporting 2-factor authentication!
 
+### Only for macOS.
+
+## Windows and Linux are unsupported.
+
 A lighten music downloader for Vkontakte.
 
 ![java-vkmd](screenshot.gif)
@@ -21,7 +25,7 @@ Run
 $ ./vkmd
 ```
 
-or [download](https://github.com/bupy7/java-vkmd/releases) latest package for your OS (Windows or macOS).
+or [download](https://github.com/bupy7/java-vkmd/releases) the latest package for macOS.
 
 Developing
 ----------
